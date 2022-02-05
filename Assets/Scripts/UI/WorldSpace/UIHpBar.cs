@@ -38,7 +38,8 @@ public class UIHpBar : UIBase
         transform.position = parent.position + Vector3.up * _parentHeight + _hpPos;
         transform.rotation = Camera.main.transform.rotation;
 
-        //float ratio = _stat.Hp / (float)_stat.MaxHp;
+        float ratio = _stat.Hp / (float)_stat.MaxHp;
+        SetHpRatio(ratio);
     }
 
     public void SetHpRatio(float ratio)

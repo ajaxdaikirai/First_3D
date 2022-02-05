@@ -1101,11 +1101,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3315808398779132090, guid: 8eed4ebf1237e714588f9b9b196fa643, type: 3}
   m_PrefabInstance: {fileID: 415955665}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &661456500 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 701703849242763117, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-  m_PrefabInstance: {fileID: 2014823236}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1265,29 +1260,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1691173643583742655, guid: 0d932d2cd5129b84ca45c15347ba07af, type: 3}
   m_PrefabInstance: {fileID: 705544030}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &729683094 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 261143922692510208, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-  m_PrefabInstance: {fileID: 2014823236}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &729683095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 729683094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f93422e3e033e4aa4d80c9c8d0d939, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftHandObj: {fileID: 661456500}
-  attachLeft: {fileID: 0}
-  canBeUsed: 0
-  isUsed: 0
-  leftHandPositionWeight: 0
-  leftHandRotationWeight: 0
 --- !u!1001 &731461546
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2523,63 +2495,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1691173643583742655, guid: 0d932d2cd5129b84ca45c15347ba07af, type: 3}
   m_PrefabInstance: {fileID: 1950301067}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &2014823236
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 261143922692510208, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_Name
-      value: OfficeGirlKnight
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.98
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3354900489690433063, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7c9255d977e00424dbccefe04bd44f31, type: 3}
 --- !u!1001 &2053903391
 PrefabInstance:
   m_ObjectHideFlags: 0

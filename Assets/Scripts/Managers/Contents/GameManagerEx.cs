@@ -14,22 +14,25 @@ public class GameManagerEx
     GameObject _enemyCore;
 
     //스폰 되는 지점
-    Vector3 _characterSpawnPos;
-    Vector3 _enemySpawnPos;
+    Vector3 _unitSpawnPos;
+    Vector3 _monsterSpawnPos;
+
+    //스폰위치 랜덤 범위
+    float _positionVar = 1.0f;
 
     //스폰되어 있는 캐릭터
-    List<GameObject> _characters = new List<GameObject>();
+    List<GameObject> _units = new List<GameObject>();
     //스폰되어 있는 적
-    List<GameObject> _enemies = new List<GameObject>();
+    List<GameObject> _monsters = new List<GameObject>();
 
     public GameObject Player { get { return _player; } }
     public GameObject EnemyCore { get { return _enemyCore; } }
-    public List<GameObject> Characters { get { return _characters; } }
-    public List<GameObject> Enemies { get { return _enemies; } }
+    public List<GameObject> Units { get { return _units; } }
+    public List<GameObject> Monsters { get { return _monsters; } }
 
     //스폰 되는 지점
-    public Vector3 CharacterSpawnPos { get { return _characterSpawnPos; } }
-    public Vector3 EnemySpawnPos { get { return _enemySpawnPos; } }
+    public Vector3 UnitSpawnPos { get { return _unitSpawnPos; } }
+    public Vector3 MonsterSpawnPos { get { return _monsterSpawnPos; } }
 
     public void Init()
     {
@@ -39,7 +42,7 @@ public class GameManagerEx
             Debug.Log("Failed Load UnitSpawnSpot");
             return;
         }
-        _characterSpawnPos = CharacterSpawnSpot.transform.position;
+        _unitSpawnPos = CharacterSpawnSpot.transform.position;
 
         GameObject EnemySpawnSpot = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterSpawnSpot));
         if (CharacterSpawnSpot == null)
@@ -47,7 +50,7 @@ public class GameManagerEx
             Debug.Log("Failed Load MonsterSpawnSpot");
             return;
         }
-        _enemySpawnPos = EnemySpawnSpot.transform.position;
+        _monsterSpawnPos = EnemySpawnSpot.transform.position;
 
         GameObject EnemyCore = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterCrystal));
         if (EnemyCore == null)
@@ -67,9 +70,38 @@ public class GameManagerEx
             return null;
         }
         _player = player;
-        player.transform.position = _characterSpawnPos;
+        
+        player.transform.position = _unitSpawnPos;
 
         return player;
+    }
+
+    //캐릭터가 생성되는 위치를 반환
+    public Vector3 CreatePos(Define.Layer layer)
+    {
+        Vector3 basePos;
+        
+        switch (layer)
+        {
+            case Define.Layer.Unit:
+                basePos = _unitSpawnPos;
+                break;
+            case Define.Layer.Monster:
+                basePos = _monsterSpawnPos;
+                break;
+            default:
+                Debug.Log($"Undifned Case : Layer {Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterCrystal)}");
+                return Vector3.zero;
+        }
+
+        //랜덤 위치 생성
+        Vector3 newPos = new Vector3(
+            UnityEngine.Random.Range(basePos.x - _positionVar, basePos.x + _positionVar),
+            basePos.y,
+            UnityEngine.Random.Range(basePos.z - _positionVar, basePos.z + _positionVar)
+        );
+
+        return newPos;
     }
 
     public GameObject Spawn(Define.Layer layer, string path, Transform parent = null)
@@ -78,11 +110,11 @@ public class GameManagerEx
 
         switch (layer)
         {
-            case Define.Layer.Character:
-                _characters.Add(go);
+            case Define.Layer.Unit:
+                _units.Add(go);
                 break;
-            case Define.Layer.Enemy:
-                _enemies.Add(go);
+            case Define.Layer.Monster:
+                _monsters.Add(go);
                 break;
         }
 
@@ -93,10 +125,10 @@ public class GameManagerEx
     {
         switch (layer)
         {
-            case Define.Layer.Character:
-                if (_characters.Contains(go))
+            case Define.Layer.Unit:
+                if (_units.Contains(go))
                 {
-                    _characters.Remove(go);
+                    _units.Remove(go);
                 }
                 else
                 {
@@ -104,10 +136,10 @@ public class GameManagerEx
                     return;
                 }
                 break;
-            case Define.Layer.Enemy:
-                if (_enemies.Contains(go))
+            case Define.Layer.Monster:
+                if (_monsters.Contains(go))
                 {
-                    _enemies.Remove(go);
+                    _monsters.Remove(go);
                 }
                 else
                 {

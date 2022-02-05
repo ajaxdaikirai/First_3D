@@ -7,13 +7,10 @@ public class UIManager
     //캔버스 순서
     int _order = 10;
 
-    //실행한 UI오브젝트
-    UIScene _uiScene = null;
+    UIScene _uiScene;
 
-    public UIScene UIScene
-    {
-        get { return _uiScene; }
-    }
+    //실행중인 UI오브젝트
+    public UIScene UIScene { get { return _uiScene; } }
 
     public GameObject Root
     {
@@ -95,7 +92,6 @@ public class UIManager
 
     public void Clear()
     {
-        _uiScene = null;
     }
 
 }

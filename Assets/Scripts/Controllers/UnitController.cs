@@ -95,7 +95,7 @@ public class UnitController : BaseController
         minDis = (Managers.Game.EnemyCore.transform.position - transform.position).sqrMagnitude;
 
         //플레이어 포함 모든 캐릭터와 거리를 비교하고 가장 가까운 캐릭터를 타겟으로 지정
-        List<GameObject> targetList = Managers.Game.Enemies;
+        List<GameObject> targetList = Managers.Game.Monsters;
         if (targetList.Count == 0)
         {
             return;

@@ -13,9 +13,9 @@ public class GameScene : BaseScene
         Managers.UI.ShowSceneUI<UISceneGame>();
 
         //적 생산, 아군 생산을 게임 매니저에서 모두 수행할 수 있도록 개선해 보자
-        //GameObject enemy = new GameObject(name = "EnemySpawningPool");
-        //EnemySpawningPool enemySpawningPool = Util.GetOrAddComponent<EnemySpawningPool>(enemy);
-        //enemySpawningPool.SetKeepEnemyCount(6);
+        GameObject enemy = new GameObject(name = "EnemySpawningPool");
+        UnitSpawningPool enemySpawningPool = Util.GetOrAddComponent<UnitSpawningPool>(enemy);
+        enemySpawningPool.SetKeepEnemyCount(6);
 
         //씬 오브젝트 이름 변경
         gameObject.name = System.Enum.GetName(typeof(Define.Scenes), _sceneType);

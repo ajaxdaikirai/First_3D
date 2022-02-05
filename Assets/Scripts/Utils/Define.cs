@@ -11,13 +11,6 @@ public class Define
         GameScene,
     }
 
-    //public enum WorldObject
-    //{
-    //    Unknown,
-    //    Player,
-    //    Enemy,
-    //}
-
     public enum State
     {
         Die,
@@ -36,16 +29,6 @@ public class Define
         PointerUp,
     }
 
-    public enum Enemy
-    {
-        Enemy,
-    }
-
-    public enum Character
-    {
-        Character,
-    }
-
     public enum SceneLocateObject
     {
         UnitSpawnSpot,
@@ -56,7 +39,7 @@ public class Define
     public enum Layer
     {
         Floor = 7,
-        Character = 8,
-        Enemy = 9,
+        Unit = 8,
+        Monster = 9,
     }
 }

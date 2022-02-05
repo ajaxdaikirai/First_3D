@@ -54,18 +54,15 @@ public class JoyStickHandler : MonoBehaviour,
         if (dis > _radius)
         {
             _handle.position = _handleFirstPos + dir * _radius;
-            if (OnDragHandler != null)
-            {
-                OnDragHandler.Invoke(charDir);
-            }
+            
         }
         else
         {
             _handle.position = _handleFirstPos + dir * dis;
-            if (OnDragHandler != null)
-            {
-                OnDragHandler.Invoke(charDir);
-            }
+        }
+        if (OnDragHandler != null)
+        {
+            OnDragHandler.Invoke(charDir);
         }
     }
 

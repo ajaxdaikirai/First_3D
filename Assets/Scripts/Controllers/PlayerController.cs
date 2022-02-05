@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : BaseController
 {
-    //플레이어 컨트롤러 UI가 들어있는 컴포넌트
-    UIScene _controllUI;
+    //플레이푳E컨트롤러 UI가 들어있는 컴포넌트
+    UIScene _uiScene;
 
     //조이스틱 방향
     Vector3 _dir;
@@ -43,9 +43,9 @@ public class PlayerController : BaseController
         }
 
         //컨트롤러UI 초기화
-        _controllUI = Managers.UI.UIScene;
+        _uiScene = Managers.UI.UIScene;
 
-        if(_controllUI == null || _controllUI.JoyStickHandler == null)
+        if(_uiScene == null || _uiScene.JoyStickHandler == null)
         {
             Debug.Log("Not Exist Player Controller UI");
         }
@@ -56,11 +56,17 @@ public class PlayerController : BaseController
             Managers.UI.MakeWorldUI<UIHpBar>(transform);
         }
 
-        //조이스틱에 액션 추가
-        _controllUI.JoyStickHandler.OnDragHandler -= OnJoyStickDragEvent;
-        _controllUI.JoyStickHandler.OnDragHandler += OnJoyStickDragEvent;
-        _controllUI.JoyStickHandler.OnUpHandler -= OnJoyStickUpEvent;
-        _controllUI.JoyStickHandler.OnUpHandler += OnJoyStickUpEvent;
+        //버튼 액션 추가
+        AddAction();
+    }
+
+    //Invoke로 사용할 수 있게 각종 버튼에 액션 추가
+    void AddAction()
+    {
+        _uiScene.JoyStickHandler.OnDragHandler -= OnJoyStickDragEvent;
+        _uiScene.JoyStickHandler.OnDragHandler += OnJoyStickDragEvent;
+        _uiScene.JoyStickHandler.OnUpHandler -= OnJoyStickUpEvent;
+        _uiScene.JoyStickHandler.OnUpHandler += OnJoyStickUpEvent;
     }
 
     //조이스틱의 방향을 인자로 받음
