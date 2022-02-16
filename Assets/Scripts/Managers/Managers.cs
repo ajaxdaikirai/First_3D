@@ -9,16 +9,20 @@ public class Managers : MonoBehaviour
 
     #region Contents
     GameManagerEx _game = new GameManagerEx();
+    SkillManager _skill = new SkillManager();
 
     public static GameManagerEx Game { get { return Instance._game; } }
+    public static SkillManager Skill { get { return Instance._skill; } }
     #endregion
 
     #region Core
+    DataManager _data = new DataManager();
     PoolManager _pool = new PoolManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerEx _scene = new SceneManagerEx();
     UIManager _ui = new UIManager();
 
+    public static DataManager Data { get { return Instance._data; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }

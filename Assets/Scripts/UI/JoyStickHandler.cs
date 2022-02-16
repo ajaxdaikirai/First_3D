@@ -51,6 +51,11 @@ public class JoyStickHandler : MonoBehaviour,
         //캐릭터 이동을 위한 방향
         Vector3 charDir = new Vector3(dir.x, 0.0f, dir.y);
 
+        if (OnDragHandler != null)
+        {
+            OnDragHandler.Invoke(charDir);
+        }
+
         if (dis > _radius)
         {
             _handle.position = _handleFirstPos + dir * _radius;
@@ -60,10 +65,7 @@ public class JoyStickHandler : MonoBehaviour,
         {
             _handle.position = _handleFirstPos + dir * dis;
         }
-        if (OnDragHandler != null)
-        {
-            OnDragHandler.Invoke(charDir);
-        }
+        
     }
 
     public void OnPointerUp(PointerEventData eventData)

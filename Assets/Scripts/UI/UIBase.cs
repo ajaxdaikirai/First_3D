@@ -75,11 +75,9 @@ public abstract class UIBase : MonoBehaviour
             case Define.UIEvent.Drag:
                 evt.OnDragHandler -= action;
                 evt.OnDragHandler += action;
+                //드래그 처리
+                evt.OnDragHandler += ((PointerEventData data) => { evt.gameObject.transform.position = data.position; });
                 break;
-
         }
-
-        //드래그 처리
-        evt.OnDragHandler += ((PointerEventData data) => { evt.gameObject.transform.position = data.position; });
     }
 }

@@ -6,17 +6,29 @@ public abstract class BaseController : MonoBehaviour
 {
     //현재 상태
     [SerializeField]
-    protected Define.State _state = Define.State.Idle;
+    private Define.State _state = Define.State.Idle;
 
     //락온된 오브젝트
     [SerializeField]
     protected GameObject _lockTarget;
+
+    //방향
+    protected Vector3 _dir = Vector3.forward;
+
+    //리지드바디
+    protected Rigidbody _rig;
 
     //애니메이터
     protected Animator _anim;
 
     //목적지
     protected Vector3 _destPos;
+
+    protected bool _attackFlag = true;
+    protected bool _aliveFlag = true;
+
+    //사망후 비활성화까지 시간
+    protected float DESPAWN_DELAY_TIME = 5.0f;
 
     public virtual Define.State State
     {
@@ -34,11 +46,14 @@ public abstract class BaseController : MonoBehaviour
                     _anim.CrossFade("Idle", 0.1f);
                     break;
                 case Define.State.Die:
+                    int ranNom = (int)Random.Range(1.0f, 4.0f);
+                    _anim.CrossFade($"Die{ranNom}", 0.5f);
                     break;
                 case Define.State.Attack:
+                    _anim.CrossFade("Attack", 0.1f);
                     break;
                 case Define.State.Moving:
-                    _anim.CrossFade("Walk", 0.07f);
+                    _anim.CrossFade("Walk", 0.1f);
                     break;
                 case Define.State.Skill:
                     break;
@@ -77,10 +92,29 @@ public abstract class BaseController : MonoBehaviour
 
     public abstract void Init();
 
-    protected virtual void UpdateDie() { }
-    protected virtual void UpdateMoving() { }
-    protected virtual void UpdateIdle() { }
+    protected virtual void UpdateAlways() 
+    {
+        _rig.velocity = Vector3.zero; 
+    }
+
+    protected virtual void UpdateDie() 
+    {
+        if (_aliveFlag)
+        {
+            _aliveFlag = false;
+            StartCoroutine(Despwn());
+        }
+    }
+
+    protected virtual void UpdateIdle() {}
     protected virtual void UpdateAttack() { }
     protected virtual void UpdateSkill() { }
-    protected virtual void UpdateAlways() { }
+    protected virtual void UpdateMoving() { }
+
+    //사망시 일정시간 후 비활성화
+    protected IEnumerator Despwn()
+    {
+        yield return new WaitForSeconds(DESPAWN_DELAY_TIME);
+        Managers.Game.Despawn(Define.Layer.Unit, gameObject);
+    }
 }

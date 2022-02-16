@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
 
     //카메라 거리
     [SerializeField]
-    private Vector3 _delta = new Vector3(0, 8.0f, -5.0f);
+    private Vector3 _delta = new Vector3(0, 7.0f, -6.0f);
 
     public void SetPlayer(GameObject player)
     {

@@ -11,7 +11,7 @@ public class GameManagerEx
     GameObject _player;
 
     //적 넥서스
-    GameObject _enemyCore;
+    GameObject _monsterCrystal;
 
     //스폰 되는 지점
     Vector3 _unitSpawnPos;
@@ -26,7 +26,7 @@ public class GameManagerEx
     List<GameObject> _monsters = new List<GameObject>();
 
     public GameObject Player { get { return _player; } }
-    public GameObject EnemyCore { get { return _enemyCore; } }
+    public GameObject MonsterCrystal { get { return _monsterCrystal; } }
     public List<GameObject> Units { get { return _units; } }
     public List<GameObject> Monsters { get { return _monsters; } }
 
@@ -36,29 +36,29 @@ public class GameManagerEx
 
     public void Init()
     {
-        GameObject CharacterSpawnSpot = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.UnitSpawnSpot));
-        if (CharacterSpawnSpot == null)
+        GameObject unitSpawnPos = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.UnitSpawnSpot));
+        if (unitSpawnPos == null)
         {
             Debug.Log("Failed Load UnitSpawnSpot");
             return;
         }
-        _unitSpawnPos = CharacterSpawnSpot.transform.position;
+        _unitSpawnPos = unitSpawnPos.transform.position;
 
-        GameObject EnemySpawnSpot = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterSpawnSpot));
-        if (CharacterSpawnSpot == null)
+        GameObject monsterSpawnSpot = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterSpawnSpot));
+        if (monsterSpawnSpot == null)
         {
             Debug.Log("Failed Load MonsterSpawnSpot");
             return;
         }
-        _monsterSpawnPos = EnemySpawnSpot.transform.position;
+        _monsterSpawnPos = monsterSpawnSpot.transform.position;
 
-        GameObject EnemyCore = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterCrystal));
-        if (EnemyCore == null)
+        GameObject monsterCrystal = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterCrystal));
+        if (monsterCrystal == null)
         {
             Debug.Log("Failed Load MonsterCrystal");
             return;
         }
-        _enemyCore = EnemyCore;
+        _monsterCrystal = monsterCrystal;
     }
 
     public GameObject InstantiatePlayer()
@@ -117,6 +117,9 @@ public class GameManagerEx
                 _monsters.Add(go);
                 break;
         }
+        
+        //위치 설정
+        go.transform.position = CreatePos(layer);
 
         return go;
     }

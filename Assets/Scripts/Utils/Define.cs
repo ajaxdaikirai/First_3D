@@ -38,8 +38,14 @@ public class Define
 
     public enum Layer
     {
-        Floor = 7,
-        Unit = 8,
-        Monster = 9,
+        Unit = 7,
+        Monster = 8,
+        EnemyStaticObject = 9,
+    }
+
+    public enum Skill
+    {
+        Launch,
+        Buff,
     }
 }

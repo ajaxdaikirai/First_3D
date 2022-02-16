@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class UIScene : UIBase
     JoyStickHandler _joyStickHandler;
 
     public JoyStickHandler JoyStickHandler { get { return _joyStickHandler; } }
+
+    //공격버튼 핸들러
+    public Action OnAttackBtnDownHandler = null;
 
     public override void Init()
     {
@@ -26,9 +30,12 @@ public class UIScene : UIBase
     }
 
     //공격버튼
-    protected void BindAttackEvent(PointerEventData data)
+    protected void AttackEvent(PointerEventData data)
     {
-        Debug.Log("Attack Button Pressed");
+        if (OnAttackBtnDownHandler != null)
+        {
+            OnAttackBtnDownHandler.Invoke();
+        }
     }
 
 }

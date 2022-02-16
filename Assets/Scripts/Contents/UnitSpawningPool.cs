@@ -20,7 +20,7 @@ public class UnitSpawningPool : SpawningPool
     {
         while (_reserveCount < _keepObjectCount)
         {
-            StartCoroutine("ReserveSpawn");
+            StartCoroutine(ReserveSpawn());
         }
     }
 

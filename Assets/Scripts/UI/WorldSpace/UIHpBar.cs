@@ -7,10 +7,10 @@ public class UIHpBar : UIBase
 {
     //hp바 위치
     [SerializeField]
-    Vector3 _hpPos = new Vector3(0, 0.5f, 0);
+    Vector3 _hpPos = new Vector3(0, 0.3f, 0);
 
     //대상 오브젝트
-    Transform parent;
+    Transform _parent;
 
     //대상 오브젝트 스텟
     Stat _stat;
@@ -20,23 +20,54 @@ public class UIHpBar : UIBase
 
     enum GameObjects
     {
+        UIHpBar,
         HpBar,
+    }
+
+    enum Images
+    {
+        Fill,
     }
 
     public override void Init()
     {
         Bind<GameObject>(typeof(GameObjects));
+        Bind<Image>(typeof(Images));
         _stat = transform.parent.GetComponent<Stat>();
-        
+
+        _parent = transform.parent;
+
         //대상 오브젝트 높이값 취득
-        parent = transform.parent;
-        _parentHeight = parent.GetComponent<Collider>().bounds.size.y;
+        _parentHeight = _parent.GetComponent<Collider>().bounds.size.y;
+
+        GameObject go = GetImage((int)Images.Fill).gameObject;
+
+        //hp색 변경
+        if (_parent.gameObject.layer == (int)Define.Layer.Unit)
+        {
+            if (Managers.Game.Player == _parent.gameObject)
+            {
+                GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(117 / 255f, 1, 84 / 255f);
+            }
+            else
+            {
+                GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(84 / 255f, 153 / 255f, 1);
+            }
+        }
+        else if (_parent.gameObject.layer == (int)Define.Layer.Monster)
+        {
+            GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(1, 83 / 255f, 83 / 255f);
+        }
+        else if (_parent.gameObject.layer == (int)Define.Layer.EnemyStaticObject)
+        {
+            GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(199 / 255f, 83 / 255f, 1);
+            GetGameObject((int)GameObjects.UIHpBar).transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
     }
 
     private void Update()
     {
-        transform.position = parent.position + Vector3.up * _parentHeight + _hpPos;
-        transform.rotation = Camera.main.transform.rotation;
+        transform.SetPositionAndRotation(_parent.position + Vector3.up * _parentHeight + _hpPos, Camera.main.transform.rotation);
 
         float ratio = _stat.Hp / (float)_stat.MaxHp;
         SetHpRatio(ratio);

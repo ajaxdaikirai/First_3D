@@ -8,18 +8,22 @@ public class PlayerController : BaseController
     //플레이푳E컨트롤러 UI가 들어있는 컴포넌트
     UIScene _uiScene;
 
-    //조이스틱 방향
-    Vector3 _dir;
-
     //플레이어 스텟
     Stat _stat;
 
-    Rigidbody _rig;
+    //스킬 발사 지점
+    Transform _launchPoint;
+
+    //공격대상 레이어
+    int[] _layers;
+
+    //스킬 이름
+    string SKILL_NAME = "PlayerAttack";
 
     public override void Init()
     {
         //상태 초기화
-        _state = Define.State.Idle;
+        State = Define.State.Idle;
 
         //스텟 초기화
         _stat = gameObject.GetComponent<Stat>();
@@ -27,6 +31,7 @@ public class PlayerController : BaseController
         {
             Debug.Log("Can't Load Stat Component");
         }
+        _stat.SetStat(Managers.Data.GetStatByLevel("PlayerStat", 1));
 
         //애니메이터
         _anim = gameObject.GetComponent<Animator>();
@@ -37,7 +42,7 @@ public class PlayerController : BaseController
 
         //리지드바디
         _rig = gameObject.GetComponent<Rigidbody>();
-        if (_anim == null)
+        if (_rig == null)
         {
             Debug.Log("Can't Load Rigidbody Component");
         }
@@ -45,7 +50,7 @@ public class PlayerController : BaseController
         //컨트롤러UI 초기화
         _uiScene = Managers.UI.UIScene;
 
-        if(_uiScene == null || _uiScene.JoyStickHandler == null)
+        if (_uiScene == null || _uiScene.JoyStickHandler == null)
         {
             Debug.Log("Not Exist Player Controller UI");
         }
@@ -55,6 +60,12 @@ public class PlayerController : BaseController
         {
             Managers.UI.MakeWorldUI<UIHpBar>(transform);
         }
+
+        //스킬 발사 지점
+        _launchPoint = Util.FindChild<Transform>(gameObject, "LaunchPoint", true);
+
+        //공격대상 레이어 지정
+        _layers = new int[]{ (int)Define.Layer.Monster, (int)Define.Layer.EnemyStaticObject};
 
         //버튼 액션 추가
         AddAction();
@@ -67,13 +78,17 @@ public class PlayerController : BaseController
         _uiScene.JoyStickHandler.OnDragHandler += OnJoyStickDragEvent;
         _uiScene.JoyStickHandler.OnUpHandler -= OnJoyStickUpEvent;
         _uiScene.JoyStickHandler.OnUpHandler += OnJoyStickUpEvent;
+        _uiScene.OnAttackBtnDownHandler -= OnAttackBtnDownEvent;
+        _uiScene.OnAttackBtnDownHandler += OnAttackBtnDownEvent;
     }
 
     //조이스틱의 방향을 인자로 받음
     void OnJoyStickDragEvent(Vector3 diretion)
     {
-        
-        State = Define.State.Moving;       
+        if (State != Define.State.Moving)
+        {
+            State = Define.State.Moving;
+        }
         _dir = diretion;
     }
 
@@ -82,14 +97,38 @@ public class PlayerController : BaseController
         State = Define.State.Idle;
     }
 
-    protected override void UpdateMoving()
+    //공격버튼 클릭시
+    void OnAttackBtnDownEvent()
     {
-        transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
-        if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
+        if (_attackFlag)
+        {
+            State = Define.State.Attack;
+            _attackFlag = false;
+            StartCoroutine(AttackCoolTime());
+        }
     }
 
-    protected override void UpdateAlways()
+    //공격 쿨타임 동안 공격 플레그를 false
+    protected IEnumerator AttackCoolTime()
     {
-        _rig.velocity = Vector3.zero;
+        yield return new WaitForSeconds(_stat.AttackSpeed);
+        _attackFlag = true;
     }
+
+    void OnAttack()
+    {
+        Managers.Skill.SpawnSkill(SKILL_NAME, _launchPoint.position, _dir, _stat.AttackDistance, _stat.ProjectileSpeed, _stat.Offence, _layers);
+    }
+
+    void EndAttack()
+    {
+        State = Define.State.Idle;
+    }
+
+    protected override void UpdateMoving()
+    {
+            transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
+            if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
+    }
+
 }

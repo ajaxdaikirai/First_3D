@@ -90,6 +90,24 @@ public class UIManager
 
     }
 
+    //UI오브젝트에 자식오브젝트를 추가
+    public T MakeSubItem<T>(Transform parentTransform = null, string name = null) where T : UIBase
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            name = typeof(T).Name;
+        }
+
+        GameObject go = Managers.Resource.Instantiate($"UI/SubItem/{name}");
+
+        if(parentTransform != null)
+        {
+            go.transform.SetParent(parentTransform);
+        }
+
+        return Util.GetOrAddComponent<T>(go);
+    }
+
     public void Clear()
     {
     }
