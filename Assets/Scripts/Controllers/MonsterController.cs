@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class MonsterController : BaseController
 {
-    //스텟
-    [SerializeField]
-    Stat _stat;
-
     //적 인식 갱신 시간
     [SerializeField]
     float _updateLockOnInterval = 2.0f;

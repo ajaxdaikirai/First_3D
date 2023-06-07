@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class UnitController : BaseController
 {
-    //스텟
-    Stat _stat;
-
     //적 인식 갱신 시간
     [SerializeField]
     float UpdateLockOnInterval = 2.0f;

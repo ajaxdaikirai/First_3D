@@ -21,14 +21,14 @@ public abstract class BaseController : MonoBehaviour
     //애니메이터
     protected Animator _anim;
 
+    //스텟
+    protected Stat _stat;
+
     //목적지
     protected Vector3 _destPos;
 
     protected bool _attackFlag = true;
     protected bool _aliveFlag = true;
-
-    //사망후 비활성화까지 시간
-    protected float DESPAWN_DELAY_TIME = 5.0f;
 
     public virtual Define.State State
     {
@@ -114,7 +114,21 @@ public abstract class BaseController : MonoBehaviour
     //사망시 일정시간 후 비활성화
     protected IEnumerator Despwn()
     {
-        yield return new WaitForSeconds(DESPAWN_DELAY_TIME);
+        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
         Managers.Game.Despawn(Define.Layer.Unit, gameObject);
+    }
+
+    protected virtual void OnEnable()
+    {
+        //상태 초기화
+        State = Define.State.Idle;
+
+        //체력회복
+        if (_stat != null)
+        {
+            _stat.Hp = _stat.MaxHp;
+        }
+
+        _aliveFlag = true;
     }
 }

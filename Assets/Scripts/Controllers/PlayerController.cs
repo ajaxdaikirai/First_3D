@@ -8,9 +8,6 @@ public class PlayerController : BaseController
     //플레이푳E컨트롤러 UI가 들어있는 컴포넌트
     UIScene _uiScene;
 
-    //플레이어 스텟
-    Stat _stat;
-
     //스킬 발사 지점
     Transform _launchPoint;
 

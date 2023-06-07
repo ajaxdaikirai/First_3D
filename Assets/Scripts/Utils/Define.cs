@@ -48,4 +48,6 @@ public class Define
         Launch,
         Buff,
     }
+
+    public const float DESPAWN_DELAY_TIME = 5.0f;
 }
