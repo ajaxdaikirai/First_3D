@@ -81,8 +81,6 @@ public class UnitController : BaseController
         _dir = _destPos.normalized;
         if(dis < _stat.AttackDistance)
         {
-            _stat.OnAttacked(500);
-            return;
             State = Define.State.Attack;
             return;
         }
