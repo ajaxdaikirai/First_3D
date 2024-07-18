@@ -20,7 +20,6 @@ public class UIHpBar : UIBase
 
     enum GameObjects
     {
-        UIHpBar,
         HpBar,
     }
 
@@ -40,29 +39,28 @@ public class UIHpBar : UIBase
         //대상 오브젝트 높이값 취득
         _parentHeight = _parent.GetComponent<Collider>().bounds.size.y;
 
-        GameObject go = GetImage((int)Images.Fill).gameObject;
-
-        //hp색 변경
-        if (_parent.gameObject.layer == (int)Define.Layer.Unit)
+        float[] rgb;
+        if (Managers.Game.Player == _parent.gameObject)
         {
-            if (Managers.Game.Player == _parent.gameObject)
-            {
-                GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(117 / 255f, 1, 84 / 255f);
-            }
-            else
-            {
-                GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(84 / 255f, 153 / 255f, 1);
-            }
+            rgb = UIConf.HpBarPlayerRgb;
         }
-        else if (_parent.gameObject.layer == (int)Define.Layer.Monster)
+        else if (_parent.gameObject.layer == (int)Define.Layer.Unit)
         {
-            GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(1, 83 / 255f, 83 / 255f);
+            rgb = UIConf.HpBarUnitRgb;
         }
         else if (_parent.gameObject.layer == (int)Define.Layer.EnemyStaticObject)
         {
-            GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(199 / 255f, 83 / 255f, 1);
-            GetGameObject((int)GameObjects.UIHpBar).transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            rgb = UIConf.HpBarEnemyObjectRgb;
+            // 크기 변경
+            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
+        else
+        {
+            rgb = UIConf.HpBarMonsterRgb;
+        }
+
+        //hp색 변경
+        GetImage((int)Images.Fill).GetComponent<Image>().color = new Color(rgb[0], rgb[1], rgb[2]);
     }
 
     private void Update()
