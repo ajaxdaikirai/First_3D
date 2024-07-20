@@ -8,26 +8,19 @@ public abstract class BaseController : MonoBehaviour
     [SerializeField]
     private Define.State _state = Define.State.Idle;
 
-    //락온된 오브젝트
-    [SerializeField]
-    protected GameObject _lockTarget;
-
     //방향
     protected Vector3 _dir = Vector3.forward;
-
     //리지드바디
     protected Rigidbody _rig;
-
     //애니메이터
     protected Animator _anim;
-
     //스텟
     protected Stat _stat;
-
     //목적지
     protected Vector3 _destPos;
-
+    // 쿨타임 플래그
     protected bool _attackFlag = true;
+    // 생존 플래그
     protected bool _aliveFlag = true;
 
     public virtual Define.State State
@@ -90,7 +83,40 @@ public abstract class BaseController : MonoBehaviour
         UpdateAlways();
     }
 
-    public abstract void Init();
+    // 애니메이션이 있는 오브젝트 디폴트 설정
+    protected void SetCreatureDefault()
+    {
+        //상태 초기화
+        State = Define.State.Idle;
+
+        //애니메이터
+        _anim = gameObject.GetComponent<Animator>();
+        if (_anim == null)
+        {
+            Debug.Log("Can't Load Animator Component");
+        }
+
+        //리지드바디
+        _rig = gameObject.GetComponent<Rigidbody>();
+        if (_anim == null)
+        {
+            Debug.Log("Can't Load Rigidbody Component");
+        }
+
+        //스텟 추가
+        _stat = transform.GetComponent<Stat>();
+        if (_stat == null)
+        {
+            Debug.Log("Can't Load Stat Component");
+        }
+        _stat.SetStat(Managers.Data.GetStatByLevel($"{gameObject.name}Stat", 1));
+
+        //HP바 추가
+        if (gameObject.GetComponentInParent<UIHpBar>() == null)
+        {
+            Managers.UI.MakeWorldUI<UIHpBar>(transform);
+        }
+    }
 
     protected virtual void UpdateAlways() 
     {
@@ -102,20 +128,22 @@ public abstract class BaseController : MonoBehaviour
         if (_aliveFlag)
         {
             _aliveFlag = false;
-            StartCoroutine(Despwn());
+            Managers.Game.Despawn(Define.Layer.Unit, gameObject);
         }
     }
 
-    protected virtual void UpdateIdle() {}
-    protected virtual void UpdateAttack() { }
-    protected virtual void UpdateSkill() { }
-    protected virtual void UpdateMoving() { }
-
-    //사망시 일정시간 후 비활성화
-    protected IEnumerator Despwn()
+    // 쿨타임 경과후 공격가능 플래그 활성
+    protected IEnumerator AttackCoolTime()
     {
-        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
-        Managers.Game.Despawn(Define.Layer.Unit, gameObject);
+        yield return new WaitForSeconds(_stat.AttackSpeed);
+        _attackFlag = true;
+    }
+
+    // 공격 후의 처리
+    // 애니메이션에서 호출되는 경우가 있음
+    void EndAttack()
+    {
+        State = Define.State.Idle;
     }
 
     protected virtual void OnEnable()
@@ -131,4 +159,18 @@ public abstract class BaseController : MonoBehaviour
 
         _aliveFlag = true;
     }
+
+    // ====================================
+    // 추상 메서드
+    // ====================================
+    protected abstract void Init();
+
+    // ====================================
+    // 필수는 아니지만
+    // 오버라이드 해야만 사용가능한 메서드
+    // ====================================
+    protected virtual void UpdateIdle() { }
+    protected virtual void UpdateAttack() { }
+    protected virtual void UpdateSkill() { }
+    protected virtual void UpdateMoving() { }
 }

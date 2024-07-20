@@ -17,32 +17,9 @@ public class PlayerController : BaseController
     //스킬 이름
     string SKILL_NAME = "PlayerAttack";
 
-    public override void Init()
+    protected override void Init()
     {
-        //상태 초기화
-        State = Define.State.Idle;
-
-        //스텟 초기화
-        _stat = gameObject.GetComponent<Stat>();
-        if (_stat == null)
-        {
-            Debug.Log("Can't Load Stat Component");
-        }
-        _stat.SetStat(Managers.Data.GetStatByLevel("PlayerStat", 1));
-
-        //애니메이터
-        _anim = gameObject.GetComponent<Animator>();
-        if (_anim == null)
-        {
-            Debug.Log("Can't Load Animator Component");
-        }
-
-        //리지드바디
-        _rig = gameObject.GetComponent<Rigidbody>();
-        if (_rig == null)
-        {
-            Debug.Log("Can't Load Rigidbody Component");
-        }
+        SetCreatureDefault();
 
         //컨트롤러UI 초기화
         _uiScene = Managers.UI.UIScene;
@@ -50,12 +27,6 @@ public class PlayerController : BaseController
         if (_uiScene == null || _uiScene.JoyStickHandler == null)
         {
             Debug.Log("Not Exist Player Controller UI");
-        }
-
-        //HP바 추가
-        if (gameObject.GetComponentInChildren<UIHpBar>() == null)
-        {
-            Managers.UI.MakeWorldUI<UIHpBar>(transform);
         }
 
         //스킬 발사 지점
@@ -105,21 +76,9 @@ public class PlayerController : BaseController
         }
     }
 
-    //공격 쿨타임 동안 공격 플레그를 false
-    protected IEnumerator AttackCoolTime()
-    {
-        yield return new WaitForSeconds(_stat.AttackSpeed);
-        _attackFlag = true;
-    }
-
     void OnAttack()
     {
         Managers.Skill.SpawnSkill(SKILL_NAME, _launchPoint.position, _dir, _stat.AttackDistance, _stat.ProjectileSpeed, _stat.Offence, _layers);
-    }
-
-    void EndAttack()
-    {
-        State = Define.State.Idle;
     }
 
     protected override void UpdateMoving()
