@@ -5,33 +5,9 @@ using UnityEngine;
 
 public class MonsterSpawningPool : SpawningPool
 {
-    protected override void Init()
-    {
-        base.Init();
-        //스폰 지점 초기화
-        _spawnPos = Managers.Game.MonsterSpawnPos;
+    protected string PATH = "Monsters/EarthElemental";
 
-        //스폰 액션 추가
-        SpawnAction -= AddSqawnAction;
-        SpawnAction += AddSqawnAction;
-    }
-
-    protected override void AddSqawnAction()
-    {
-        while (_reserveCount < _keepObjectCount)
-        {
-            StartCoroutine("ReserveSpawn");
-        }
-    }
-
-    //예약된 시간 만큼 뒤에 오브젝트 생성
-    protected virtual IEnumerator ReserveSpawn()
-    {
-        _reserveCount++;
-        yield return new WaitForSeconds(UnityEngine.Random.Range(0, _spawnTime));
-        GameObject enemy = Managers.Game.Spawn(Define.Layer.Monster, "Monsters/");
-        enemy.transform.position = _spawnPos;
-        enemy.GetComponent<BaseController>().State = Define.State.Idle;
-    }
-
+    protected override Vector3 SpawnPos() { return Managers.Game.MonsterSpawnPos; }
+    protected override string CharacterPath() { return PATH; }
+    protected override Define.Layer Layer() { return Define.Layer.Monster; }
 }
