@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class CreatureController : BaseController
+public abstract class CharacterController : BaseController
 {
     //락온된 오브젝트
     [SerializeField]
@@ -59,7 +59,7 @@ public abstract class CreatureController : BaseController
     protected IEnumerator Despawn()
     {
         yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
-        Managers.Game.Despawn(Define.Layer.Unit, gameObject);
+        Managers.Game.Despawn(Layer(), gameObject);
     }
 
     //지정된 시간만큼 타겟 갱신
@@ -154,4 +154,6 @@ public abstract class CreatureController : BaseController
     protected abstract GameObject MainTarget();
     // 메인 이외의 모든 타겟들
     protected abstract List<GameObject> Targets();
+    // 오브젝트 Layer
+    protected abstract Define.Layer Layer();
 }

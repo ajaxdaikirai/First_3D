@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterController : CreatureController
+public class MonsterController : CharacterController
 {
     protected override GameObject MainTarget()
     {
@@ -12,6 +12,11 @@ public class MonsterController : CreatureController
     protected override List<GameObject> Targets()
     {
         return Managers.Game.Units;
+    }
+
+    protected override Define.Layer Layer()
+    {
+        return Define.Layer.Monster;
     }
 }
 
