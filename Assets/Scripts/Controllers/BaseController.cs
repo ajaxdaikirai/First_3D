@@ -165,6 +165,11 @@ public abstract class BaseController : MonoBehaviour
         _aliveFlag = true;
     }
 
+    public virtual void OnDie()
+    {
+        State = Define.State.Die;
+    }
+
     // ====================================
     // 추상 메서드
     // ====================================
