@@ -14,11 +14,6 @@ public class UnitController : CharacterController
         return Managers.Game.Monsters;
     }
 
-    protected override int Layer()
-    {
-        return (int)Define.Layer.Unit;
-    }
-
     // 유닛은 4개의 사망 애니메이션이 있음
     protected override string DieAnimName() 
     {

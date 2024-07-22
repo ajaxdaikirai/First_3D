@@ -133,7 +133,7 @@ public abstract class BaseController : MonoBehaviour
         if (_aliveFlag)
         {
             _aliveFlag = false;
-            Managers.Game.Despawn((int)Define.Layer.Unit, gameObject);
+            Managers.Game.Despawn(gameObject);
         }
     }
 

@@ -124,8 +124,10 @@ public class GameManagerEx
         return go;
     }
 
-    public void Despawn(int layer, GameObject go)
+    public void Despawn(GameObject go)
     {
+        int layer = go.layer;
+
         switch (layer)
         {
             case (int)Define.Layer.Unit:

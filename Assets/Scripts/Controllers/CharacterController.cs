@@ -59,7 +59,7 @@ public abstract class CharacterController : BaseController
     protected IEnumerator Despawn()
     {
         yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
-        Managers.Game.Despawn(Layer(), gameObject);
+        Managers.Game.Despawn(gameObject);
     }
 
     //지정된 시간만큼 타겟 갱신
@@ -154,6 +154,4 @@ public abstract class CharacterController : BaseController
     protected abstract GameObject MainTarget();
     // 메인 이외의 모든 타겟들
     protected abstract List<GameObject> Targets();
-    // 오브젝트 Layer
-    protected abstract int Layer();
 }
