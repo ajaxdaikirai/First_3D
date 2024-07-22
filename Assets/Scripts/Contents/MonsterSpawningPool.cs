@@ -9,5 +9,5 @@ public class MonsterSpawningPool : SpawningPool
 
     protected override Vector3 SpawnPos() { return Managers.Game.MonsterSpawnPos; }
     protected override string CharacterPath() { return PATH; }
-    protected override Define.Layer Layer() { return Define.Layer.Monster; }
+    protected override int Layer() { return (int)Define.Layer.Monster; }
 }

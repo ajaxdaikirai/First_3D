@@ -77,16 +77,16 @@ public class GameManagerEx
     }
 
     //캐릭터가 생성되는 위치를 반환
-    public Vector3 CreatePos(Define.Layer layer)
+    public Vector3 CreatePos(int layer)
     {
         Vector3 basePos;
         
         switch (layer)
         {
-            case Define.Layer.Unit:
+            case (int)Define.Layer.Unit:
                 basePos = _unitSpawnPos;
                 break;
-            case Define.Layer.Monster:
+            case (int)Define.Layer.Monster:
                 basePos = _monsterSpawnPos;
                 break;
             default:
@@ -104,16 +104,16 @@ public class GameManagerEx
         return newPos;
     }
 
-    public GameObject Spawn(Define.Layer layer, string path, Transform parent = null)
+    public GameObject Spawn(int layer, string path, Transform parent = null)
     {
         GameObject go = Managers.Resource.Instantiate($"Characters/{path}", parent);
 
         switch (layer)
         {
-            case Define.Layer.Unit:
+            case (int)Define.Layer.Unit:
                 _units.Add(go);
                 break;
-            case Define.Layer.Monster:
+            case (int)Define.Layer.Monster:
                 _monsters.Add(go);
                 break;
         }
@@ -124,11 +124,11 @@ public class GameManagerEx
         return go;
     }
 
-    public void Despawn(Define.Layer layer, GameObject go)
+    public void Despawn(int layer, GameObject go)
     {
         switch (layer)
         {
-            case Define.Layer.Unit:
+            case (int)Define.Layer.Unit:
                 if (_units.Contains(go))
                 {
                     _units.Remove(go);
@@ -139,7 +139,7 @@ public class GameManagerEx
                     return;
                 }
                 break;
-            case Define.Layer.Monster:
+            case (int)Define.Layer.Monster:
                 if (_monsters.Contains(go))
                 {
                     _monsters.Remove(go);

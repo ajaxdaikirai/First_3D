@@ -155,5 +155,5 @@ public abstract class CharacterController : BaseController
     // 메인 이외의 모든 타겟들
     protected abstract List<GameObject> Targets();
     // 오브젝트 Layer
-    protected abstract Define.Layer Layer();
+    protected abstract int Layer();
 }

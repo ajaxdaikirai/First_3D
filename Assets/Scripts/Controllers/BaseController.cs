@@ -39,8 +39,7 @@ public abstract class BaseController : MonoBehaviour
                     _anim.CrossFade("Idle", 0.1f);
                     break;
                 case Define.State.Die:
-                    int ranNom = (int)Random.Range(1.0f, 4.0f);
-                    _anim.CrossFade($"Die{ranNom}", 0.5f);
+                    _anim.CrossFade(DieAnimName(), 0.5f);
                     break;
                 case Define.State.Attack:
                     _anim.CrossFade("Attack", 0.1f);
@@ -52,7 +51,13 @@ public abstract class BaseController : MonoBehaviour
                     break;
             }
         }
-    } 
+    }
+
+    // ================================
+    // 애니메이션 관련
+    // ================================
+    // Die 상태의 애니메이션명
+    protected virtual string DieAnimName() { return "Die"; }
 
     private void Start()
     {
@@ -128,7 +133,7 @@ public abstract class BaseController : MonoBehaviour
         if (_aliveFlag)
         {
             _aliveFlag = false;
-            Managers.Game.Despawn(Define.Layer.Unit, gameObject);
+            Managers.Game.Despawn((int)Define.Layer.Unit, gameObject);
         }
     }
 

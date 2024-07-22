@@ -62,5 +62,6 @@ public class Stat : MonoBehaviour
     protected virtual void OnDead()
     {
         gameObject.GetComponent<BaseController>().State = Define.State.Die;
+        
     }
 }

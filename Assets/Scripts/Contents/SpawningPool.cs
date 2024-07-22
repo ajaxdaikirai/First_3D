@@ -58,5 +58,5 @@ public abstract class SpawningPool : MonoBehaviour
 
     protected abstract Vector3 SpawnPos();
     protected abstract string CharacterPath();
-    protected abstract Define.Layer Layer();
+    protected abstract int Layer();
 }

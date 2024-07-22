@@ -14,9 +14,9 @@ public class MonsterController : CharacterController
         return Managers.Game.Units;
     }
 
-    protected override Define.Layer Layer()
+    protected override int Layer()
     {
-        return Define.Layer.Monster;
+        return (int)Define.Layer.Monster;
     }
 }
 
