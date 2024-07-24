@@ -124,7 +124,15 @@ public class GameManagerEx
         return go;
     }
 
+    // 오브젝트 비활성
     public void Despawn(GameObject go)
+    {
+        RemoveFromSpawnList(go);
+        Managers.Resource.Destroy(go);
+    }
+
+    // 스폰된 오브젝트 리스트에서 대상 삭제
+    public void RemoveFromSpawnList(GameObject go)
     {
         int layer = go.layer;
 
@@ -153,7 +161,5 @@ public class GameManagerEx
                 }
                 break;
         }
-
-        Managers.Resource.Destroy(go);
     }
 }

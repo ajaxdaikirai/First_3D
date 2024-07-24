@@ -128,15 +128,6 @@ public abstract class BaseController : MonoBehaviour
         _rig.velocity = Vector3.zero; 
     }
 
-    protected virtual void UpdateDie() 
-    {
-        if (_aliveFlag)
-        {
-            _aliveFlag = false;
-            Managers.Game.Despawn(gameObject);
-        }
-    }
-
     // 쿨타임 경과후 공격가능 플래그 활성
     protected IEnumerator AttackCoolTime()
     {
@@ -151,23 +142,37 @@ public abstract class BaseController : MonoBehaviour
         State = Define.State.Idle;
     }
 
+    // 재활성 되었을 때의 처리
     protected virtual void OnEnable()
     {
-        //상태 초기화
+        // 상태 초기화
         State = Define.State.Idle;
 
-        //체력회복
+        // 체력회복
         if (_stat != null)
         {
             _stat.Hp = _stat.MaxHp;
         }
 
+        // 콜라이더 활성
+        gameObject.GetComponent<CapsuleCollider>().enabled = true;
+
         _aliveFlag = true;
+        _attackFlag = true;
     }
 
     public virtual void OnDie()
     {
+        if (!_aliveFlag)
+            return;
+
+        _aliveFlag = false;
         State = Define.State.Die;
+        
+        // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
+        gameObject.GetComponent<CapsuleCollider>().enabled = false;
+        // 사망 처리
+        Managers.Game.Despawn(gameObject);
     }
 
     // ====================================
@@ -183,4 +188,5 @@ public abstract class BaseController : MonoBehaviour
     protected virtual void UpdateAttack() { }
     protected virtual void UpdateSkill() { }
     protected virtual void UpdateMoving() { }
+    protected virtual void UpdateDie() { }
 }

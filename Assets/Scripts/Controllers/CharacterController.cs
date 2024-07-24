@@ -12,8 +12,7 @@ public abstract class CharacterController : BaseController
     [SerializeField]
     protected float _updateLockOnInterval = 2.0f;
 
-    //타겟 락 함수 실행 플래그
-    protected bool _onLockTargetFlag = true;
+    protected bool _activeTargetLockFlag = true;
 
     protected override void Init()
     {
@@ -23,17 +22,29 @@ public abstract class CharacterController : BaseController
         StartCoroutine(TargetLockCoroutine());
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        if (!_activeTargetLockFlag)
+            StartCoroutine(TargetLockCoroutine());
+    }
+
     protected override void UpdateIdle()
     {
-        if (_lockTarget == null || _lockTarget.activeSelf == false) return;
-        if (_attackFlag == false) return;
+        if (!CanAttackTarget())
+            return;
+
+        if (_attackFlag == false)
+            return;
+
         State = Define.State.Moving;
     }
 
     protected override void UpdateAttack()
     {
         //타겟이 없을 경우 움직임 멈춤
-        if (_lockTarget == null || _lockTarget.activeSelf == false)
+        if (!CanAttackTarget())
         {
             State = Define.State.Idle;
             return;
@@ -46,32 +57,12 @@ public abstract class CharacterController : BaseController
         }
     }
 
-    protected override void UpdateDie() 
-    {
-        if (_aliveFlag)
-        {
-            _aliveFlag = false;
-            StartCoroutine(Despawn());
-        }
-    }
-
-    //사망시 일정시간 후 비활성화
-    protected IEnumerator Despawn()
-    {
-        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
-        Managers.Game.Despawn(gameObject);
-    }
-
     //지정된 시간만큼 타겟 갱신
     protected IEnumerator TargetLockCoroutine()
     {
         while (true)
         {
-            // 타겟 변경이 가능한 경우만 실행
-            if (_onLockTargetFlag)
-            {
-                OnLockTarget();
-            }
+            OnLockTarget();
             yield return new WaitForSeconds(_updateLockOnInterval);
         }
     }
@@ -92,19 +83,18 @@ public abstract class CharacterController : BaseController
         // 플레이어 포함 모든 캐릭터와 거리를 비교하고 가장 가까운 캐릭터를 타겟으로 지정
         List<GameObject> targetList = Targets();
         if (targetList == null || targetList.Count <= 0)
-        {
             return;
-        }
-        else
-        {
-            foreach (GameObject go in targetList)
-            {
-                distance = (go.transform.position - transform.position).sqrMagnitude;
-                if (minDis <= distance) continue;
 
-                minDis = distance;
-                _lockTarget = go;
-            }
+        foreach (GameObject go in targetList)
+        {
+            if (go.GetComponent<Stat>().IsDefeated()) 
+                continue;
+
+            distance = (go.transform.position - transform.position).sqrMagnitude;
+            if (minDis <= distance) continue;
+
+            minDis = distance;
+            _lockTarget = go;
         }
     }
 
@@ -148,6 +138,48 @@ public abstract class CharacterController : BaseController
 
         //공격 쿨타임
         StartCoroutine(AttackCoolTime());
+    }
+
+    public override void OnDie()
+    {
+        if (!_aliveFlag)
+            return;
+
+        _aliveFlag = false;
+        State = Define.State.Die;
+
+        // 타겟 갱신 중지
+        _activeTargetLockFlag = false;
+        StopCoroutine(TargetLockCoroutine());
+
+        // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
+        gameObject.GetComponent<CapsuleCollider>().enabled = false;
+        // 사망 처리
+        Managers.Game.RemoveFromSpawnList(gameObject);
+        StartCoroutine(Despawn());
+    }
+
+    //사망시 일정시간 후 비활성화
+    protected IEnumerator Despawn()
+    {
+        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
+        Managers.Resource.Destroy(gameObject);
+    }
+
+    // 타겟을 공격할 수 있는가
+    protected bool CanAttackTarget()
+    {
+        if (_lockTarget == null)
+            return false;
+
+        if (_lockTarget.activeSelf == false)
+            return false;
+
+        // HP가 없는 경우
+        if (_lockTarget.GetComponent<Stat>().IsDefeated())
+            return false;
+
+        return true;
     }
 
     // 메인 타겟 

@@ -63,4 +63,10 @@ public class Stat : MonoBehaviour
     {
         gameObject.GetComponent<BaseController>().OnDie();
     }
+
+    // »ç¸ÁÇß´Â°¡
+    public bool IsDefeated()
+    {
+        return _hp <= 0;
+    }
 }
