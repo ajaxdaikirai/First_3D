@@ -12,7 +12,6 @@ public abstract class CharacterController : BaseController
     [SerializeField]
     protected float _updateLockOnInterval = 2.0f;
 
-    protected bool _activeTargetLockFlag = true;
 
     protected override void Init()
     {
@@ -26,8 +25,7 @@ public abstract class CharacterController : BaseController
     {
         base.OnEnable();
 
-        if (!_activeTargetLockFlag)
-            StartCoroutine(TargetLockCoroutine());
+        StartCoroutine(TargetLockCoroutine());
     }
 
     protected override void UpdateIdle()
@@ -147,10 +145,6 @@ public abstract class CharacterController : BaseController
 
         _aliveFlag = false;
         State = Define.State.Die;
-
-        // 타겟 갱신 중지
-        _activeTargetLockFlag = false;
-        StopCoroutine(TargetLockCoroutine());
 
         // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
         gameObject.GetComponent<CapsuleCollider>().enabled = false;
