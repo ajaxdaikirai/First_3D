@@ -47,12 +47,11 @@ public abstract class SpawningPool : MonoBehaviour
             yield return new WaitForSeconds(UnityEngine.Random.Range(0, _spawnTime));
 
             // 상한까지 소환된 경우 스킵
-            if (_spawnedCount >= _keepObjectCount)
+            if (Managers.Game.MonsterNum >= _keepObjectCount)
                 continue;
 
             GameObject enemy = Managers.Game.Spawn(Layer(), CharacterPath());
             enemy.transform.position = _spawnPos;
-            _spawnedCount++;
         }
     }
 

@@ -29,6 +29,7 @@ public class GameManagerEx
     public GameObject MonsterCrystal { get { return _monsterCrystal; } }
     public List<GameObject> Units { get { return _units; } }
     public List<GameObject> Monsters { get { return _monsters; } }
+    public int MonsterNum { get { return _monsters.Count; } }
 
     //스폰 되는 지점
     public Vector3 UnitSpawnPos { get { return _unitSpawnPos; } }
