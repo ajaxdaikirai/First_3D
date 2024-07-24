@@ -99,7 +99,7 @@ public abstract class CharacterController : BaseController
     protected override void UpdateMoving()
     {
         //타겟이 없을 경우 움직임 멈춤
-        if (_lockTarget == null || _lockTarget.activeSelf == false)
+        if (!CanAttackTarget())
         {
             State = Define.State.Idle;
             return;
@@ -127,14 +127,15 @@ public abstract class CharacterController : BaseController
     // 애니메이션에서 호출되는 경우가 있음
     void OnAttack()
     {
-        _attackFlag = false;
-        //타겟이 비활성화되었을 경우 스킵
-        if (!(_lockTarget == null || _lockTarget.activeSelf == false))
-        {
-            _lockTarget.GetComponent<Stat>().OnAttacked(_stat.Offence);
-        }
+        // 타겟이 비활성화되었을 경우 스킵
+        if (!CanAttackTarget())
+            return;
 
-        //공격 쿨타임
+        _lockTarget.GetComponent<Stat>().OnAttacked(_stat.Offence);
+
+        _attackFlag = false;
+
+        // 공격 쿨타임
         StartCoroutine(AttackCoolTime());
     }
 
