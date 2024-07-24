@@ -28,8 +28,12 @@ public abstract class BaseController : MonoBehaviour
         get { return _state; }
         set
         {
+            // 생존 플래그가 false면 Die이외의 상태로 변경 불가능
+            if (!_aliveFlag && value != Define.State.Die) return;
+
             _state = value;
 
+            // 애니메이터가 없다면 애니메이션 재생 스킵
             if (_anim == null) return;
 
             switch (_state)
@@ -145,6 +149,9 @@ public abstract class BaseController : MonoBehaviour
     // 재활성 되었을 때의 처리
     protected virtual void OnEnable()
     {
+        _aliveFlag = true;
+        _attackFlag = true;
+
         // 상태 초기화
         State = Define.State.Idle;
 
@@ -156,9 +163,6 @@ public abstract class BaseController : MonoBehaviour
 
         // 콜라이더 활성
         gameObject.GetComponent<CapsuleCollider>().enabled = true;
-
-        _aliveFlag = true;
-        _attackFlag = true;
     }
 
     public virtual void OnDie()
@@ -166,8 +170,8 @@ public abstract class BaseController : MonoBehaviour
         if (!_aliveFlag)
             return;
 
-        _aliveFlag = false;
         State = Define.State.Die;
+        _aliveFlag = false;
         
         // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
         gameObject.GetComponent<CapsuleCollider>().enabled = false;
