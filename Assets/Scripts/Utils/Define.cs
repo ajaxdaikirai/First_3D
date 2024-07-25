@@ -20,15 +20,6 @@ public class Define
         Skill,
     }
 
-    public enum UIEvent
-    {
-        Click,
-        Drag,
-        Press,
-        PointerDown,
-        PointerUp,
-    }
-
     public enum SceneLocateObject
     {
         UnitSpawnSpot,

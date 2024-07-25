@@ -1,5 +1,14 @@
 ﻿public class UIConf
 {
+    public enum UIEvent
+    {
+        Click,
+        Drag,
+        Press,
+        PointerDown,
+        PointerUp,
+    }
+
     public static readonly float[] HpBarPlayerRgb = new float[]{ 117 / 255f, 1, 84 / 255f };
     public static readonly float[] HpBarUnitRgb = new float[] { 84 / 255f, 153 / 255f, 1 };
     public static readonly float[] HpBarMonsterRgb = new float[] { 1, 83 / 255f, 83 / 255f };

@@ -58,7 +58,7 @@ public abstract class UIBase : MonoBehaviour
     protected Button GetButton(int index) { return Get<Button>(index); }
     protected Image GetImage(int index) { return Get<Image>(index); }
 
-    public void BindEvent(GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)
+    public void BindEvent(GameObject go, Action<PointerEventData> action, UIConf.UIEvent type = UIConf.UIEvent.Click)
     {
         //해당 UI에 EventHandler 컴포넌트 추가
         UIEventHandler evt = Util.GetOrAddComponent<UIEventHandler>(go);
@@ -68,11 +68,11 @@ public abstract class UIBase : MonoBehaviour
         //이벤트를 한번 빼고 추가해줌
         switch (type)
         {
-            case Define.UIEvent.Click:
+            case UIConf.UIEvent.Click:
                 evt.OnClickHandler -= action;
                 evt.OnClickHandler += action;
                 break;
-            case Define.UIEvent.Drag:
+            case UIConf.UIEvent.Drag:
                 evt.OnDragHandler -= action;
                 evt.OnDragHandler += action;
                 //드래그 처리
