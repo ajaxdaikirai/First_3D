@@ -42,8 +42,8 @@ public class UISceneGame : UIScene
         //소환창에 캐릭터 버튼을 추가
         //==============수정 필요====================
         //차후 보유 캐릭터를 불러와서 버튼 생성하도록 수정
-        _unitItems[0] = "FitnessGirlSniper";
-        _unitItems[1] = "OfficeGirlKnight";
+        _unitItems[0] = "Sniper";
+        _unitItems[1] = "Knight";
         foreach(string unitItem in _unitItems)
         {
             UIItemSummonUnit uiItem = Managers.UI.MakeSubItem<UIItemSummonUnit>(unitSummonPanel.transform);
