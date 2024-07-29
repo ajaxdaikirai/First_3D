@@ -2,13 +2,13 @@
 {
     public enum Unit
     {
-        Knight,
+        Knight = 1,
         Sniper,
     }
 
     public enum Monster
     {
-        EarthElemental,
+        EarthElemental = 1,
         FireElemental,
         IceElemental,
     }
