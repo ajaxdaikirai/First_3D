@@ -12,12 +12,11 @@ public class GameScene : BaseScene
 
         Managers.UI.ShowSceneUI<UISceneGame>();
 
-        // 몬스터 생산
-        GameObject SpawningPool = new GameObject(name = "MonsterSpawningPool");
-        Util.GetOrAddComponent<MonsterSpawningPool>(SpawningPool).SetKeepEnemyCount(6);
-
         // 씬 오브젝트 이름 변경
         gameObject.name = System.Enum.GetName(typeof(Define.Scenes), _sceneType);
+
+        // 몬스터 스폰
+        Managers.Game.StartSpawningPool(1);
 
         // 플레이어 생성
         GameObject player = Managers.Game.InstantiatePlayer();

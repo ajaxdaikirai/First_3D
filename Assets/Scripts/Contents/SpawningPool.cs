@@ -15,8 +15,6 @@ public abstract class SpawningPool : MonoBehaviour
     [SerializeField]
     protected float _spawnTime = 5.0f;
 
-    // 캐릭터 프리팹 패스
-    protected const string RESOURCE_ROOT = "Characters/";
     //생성 예약된 오브젝트
     protected int _spawnedCount = 0;
 
@@ -50,12 +48,11 @@ public abstract class SpawningPool : MonoBehaviour
             if (Managers.Game.MonsterNum >= _keepObjectCount)
                 continue;
 
-            GameObject enemy = Managers.Game.Spawn(Layer(), CharacterPath());
+            GameObject enemy = Managers.Game.Spawn(CharacterPath());
             enemy.transform.position = _spawnPos;
         }
     }
 
     protected abstract Vector3 SpawnPos();
     protected abstract string CharacterPath();
-    protected abstract int Layer();
 }

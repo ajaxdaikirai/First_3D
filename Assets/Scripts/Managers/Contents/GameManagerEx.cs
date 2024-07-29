@@ -105,9 +105,10 @@ public class GameManagerEx
         return newPos;
     }
 
-    public GameObject Spawn(int layer, string path, Transform parent = null)
+    public GameObject Spawn(string path, Transform parent = null)
     {
         GameObject go = Managers.Resource.Instantiate($"Characters/{path}", parent);
+        int layer = go.layer;
 
         switch (layer)
         {
@@ -161,6 +162,27 @@ public class GameManagerEx
                     return;
                 }
                 break;
+        }
+    }
+
+    // 스테이지ID로 몬스터 스포닝풀 가동
+    public void StartSpawningPool(int stageId)
+    {
+        // 스테이지 몬스터 정보 취득
+        List<data.StageSpawnMonster> spawnMonsters = Managers.Data.GetStageSpawnMonsterByStageId(stageId);
+
+        foreach (data.StageSpawnMonster spawnMonster in spawnMonsters)
+        {
+            // 몬스터 이름 취득
+            CharacterConf.Monster monster = (CharacterConf.Monster)spawnMonster.monster_id;
+            string monsterName = monster.ToString();
+
+            // 몬스터 이름의 스포닝풀 오브젝트 생성
+            GameObject SpawningPool = new GameObject($"{monsterName}SpawningPool");
+            // 스포닝풀 셋팅
+            MonsterSpawningPool monsterSpawningPool = Util.GetOrAddComponent<MonsterSpawningPool>(SpawningPool);
+            monsterSpawningPool.Name = monsterName;
+            monsterSpawningPool.SetKeepEnemyCount(spawnMonster.limit_num);
         }
     }
 }

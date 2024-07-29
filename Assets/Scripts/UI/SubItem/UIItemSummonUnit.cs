@@ -36,6 +36,6 @@ public class UIItemSummonUnit : UIBase
 
     public void SummonUnit(PointerEventData data)
     {
-        Managers.Game.Spawn((int)Define.Layer.Unit, $"Units/{_name}");
+        Managers.Game.Spawn($"Units/{_name}");
     }
 }
