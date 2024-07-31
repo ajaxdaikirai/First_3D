@@ -8,12 +8,12 @@ public class UISceneMain : UIScene
 {
     enum Buttons
     {
-        LoadGameSceneBtn,
+        GameStartBtn,
     }
 
     enum Texts
     {
-        LoadGameSceneTxt,
+        GameStartTxt,
     }
 
     public override void Init()
@@ -21,7 +21,7 @@ public class UISceneMain : UIScene
         Bind<Button>(typeof(Buttons));
         Bind<Text>(typeof(Texts));
 
-        BindEvent((GetButton((int)Buttons.LoadGameSceneBtn).gameObject), LoadGameScene);
+        BindEvent(GetButton((int)Buttons.GameStartBtn).gameObject, LoadGameScene);
     }
 
     //æ¿ ¿Ãµø
