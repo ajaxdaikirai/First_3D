@@ -16,8 +16,6 @@ public abstract class BaseController : MonoBehaviour
     protected Animator _anim;
     //스텟
     protected Stat _stat;
-    //목적지
-    protected Vector3 _destPos;
     // 쿨타임 플래그
     protected bool _attackFlag = true;
     // 생존 플래그
@@ -68,7 +66,7 @@ public abstract class BaseController : MonoBehaviour
         Init();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         switch (State)
         {

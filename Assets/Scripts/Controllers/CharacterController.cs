@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class CharacterController : BaseController
 {
@@ -10,12 +11,26 @@ public abstract class CharacterController : BaseController
 
     //적 인식 갱신 시간
     [SerializeField]
-    protected float _updateLockOnInterval = 2.0f;
+    protected float _updateLockOnInterval = CharacterConf.UPDATE_LOCK_ON_INTERVAL;
 
+    NavMeshAgent _nav;
 
     protected override void Init()
     {
         SetCreatureDefault();
+
+        // NavMeshAgent 설정
+        _nav = gameObject.GetComponent<NavMeshAgent>();
+        if (_nav == null)
+        {
+            Debug.Log("Can't Load NavMeshAgent Component");
+        }
+        // 이동 속도
+        _nav.speed = _stat.MoveSpeed;
+        // 이동을 멈추는 거리
+        _nav.stoppingDistance = _stat.AttackDistance;
+        // 밀림 방지
+        UpdateAvoidancePriority(CharacterConf.AvoidancePriority.Stop);
 
         //적 식별 코루틴 실행
         StartCoroutine(TargetLockCoroutine());
@@ -25,11 +40,16 @@ public abstract class CharacterController : BaseController
     {
         base.OnEnable();
 
+        // nav활성
+        gameObject.GetComponent<NavMeshAgent>().enabled = true;
+
         StartCoroutine(TargetLockCoroutine());
     }
 
     protected override void UpdateIdle()
     {
+        StopMoving();
+
         if (!CanAttackTarget())
             return;
 
@@ -41,6 +61,8 @@ public abstract class CharacterController : BaseController
 
     protected override void UpdateAttack()
     {
+        StopMoving();
+
         //타겟이 없을 경우 움직임 멈춤
         if (!CanAttackTarget())
         {
@@ -98,29 +120,37 @@ public abstract class CharacterController : BaseController
 
     protected override void UpdateMoving()
     {
-        //타겟이 없을 경우 움직임 멈춤
+        // 타겟이 없을 경우 움직임 멈춤
         if (!CanAttackTarget())
         {
             State = Define.State.Idle;
             return;
         }
 
-        //락온된 타겟과의 거리 계산
-        _destPos = _lockTarget.transform.position - transform.position;
-        float dis = _destPos.magnitude;
-        _dir = _destPos.normalized;
-        if (dis < _stat.AttackDistance)
+        // 락온된 타겟과의 거리
+        Vector3 destPos = _lockTarget.transform.position;
+        // 방향 벡터
+        Vector3 toTarget = destPos - transform.position;
+        // 이동하지 않아도 목표에 대한 방향은 갱신해둠
+        _dir = toTarget.normalized;
+
+        // 공격 가능한 거리일 경우
+        if (toTarget.magnitude < _stat.AttackDistance)
         {
             State = Define.State.Attack;
             return;
         }
 
         // 이동 처리
-        transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
+        UpdateAvoidancePriority(CharacterConf.AvoidancePriority.Move);
+        _nav.isStopped = false;
+        _nav.SetDestination(destPos);
+
+        if (_dir == Vector3.zero)
+            return;
 
         // 회전 처리
-        if (_dir != Vector3.zero)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
     }
 
     // 공격 처리
@@ -146,6 +176,10 @@ public abstract class CharacterController : BaseController
 
         _aliveFlag = false;
         State = Define.State.Die;
+
+        // navMeshAgent 비활성
+        StopMoving();
+        _nav.enabled = false;
 
         // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
         gameObject.GetComponent<CapsuleCollider>().enabled = false;
@@ -175,6 +209,26 @@ public abstract class CharacterController : BaseController
             return false;
 
         return true;
+    }
+
+    // navMeshAgent의 avoidancePriority변경
+    protected void UpdateAvoidancePriority(CharacterConf.AvoidancePriority priority)
+    {
+        if (_nav.avoidancePriority == (int)priority)
+            return;
+
+        _nav.avoidancePriority = (int)priority;
+    }
+
+    // 이동을 멈춤
+    protected void StopMoving()
+    {
+        UpdateAvoidancePriority(CharacterConf.AvoidancePriority.Stop);
+
+        if (_nav.isStopped == true)
+            return;
+
+        _nav.isStopped = true;
     }
 
     // 메인 타겟 

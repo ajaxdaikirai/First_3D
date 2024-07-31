@@ -4026,6 +4026,7 @@ GameObject:
   - component: {fileID: 6322278492755123524}
   - component: {fileID: 9119746192082263032}
   - component: {fileID: -1130526488724785314}
+  - component: {fileID: -6623976270259964650}
   m_Layer: 7
   m_Name: Sniper
   m_TagString: Untagged
@@ -4673,7 +4674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _state: 2
   _lockTarget: {fileID: 0}
-  UpdateLockOnInterval: 2
+  _updateLockOnInterval: 0.2
 --- !u!114 &-1130526488724785314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4687,6 +4688,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsUsing: 0
+--- !u!195 &-6623976270259964650
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7497089969613854937}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &7497089969618918653
 GameObject:
   m_ObjectHideFlags: 0
