@@ -21,12 +21,12 @@ public class UISceneMain : UIScene
         Bind<Button>(typeof(Buttons));
         Bind<Text>(typeof(Texts));
 
-        BindEvent(GetButton((int)Buttons.GameStartBtn).gameObject, LoadGameScene);
+        BindEvent(GetButton((int)Buttons.GameStartBtn).gameObject, LoadPrePareScene);
     }
 
     //æ¿ ¿Ãµø
-    public void LoadGameScene(PointerEventData data)
+    public void LoadPrePareScene(PointerEventData data)
     {
-        Managers.Scene.LoadScene(Define.Scenes.GameScene);
+        Managers.Scene.LoadScene(Define.Scenes.PrepareScene);
     }
 }
