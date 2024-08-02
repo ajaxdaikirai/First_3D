@@ -12,6 +12,9 @@ public class GameScene : BaseScene
 
         Managers.UI.ShowSceneUI<UISceneGame>();
 
+        // 게임 설정 초기화
+        Managers.Game.Init();
+
         // 씬 오브젝트 이름 변경
         gameObject.name = System.Enum.GetName(typeof(Define.Scenes), _sceneType);
 
