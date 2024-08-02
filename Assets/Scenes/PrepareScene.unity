@@ -206,7 +206,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1589481864
+--- !u!1001 &1106346913
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -261,8 +261,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: '@PrepareScene'
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: -6466215836777491342, guid: 2505c3bca2e66934b9269d3dc48ec8e0, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2505c3bca2e66934b9269d3dc48ec8e0, type: 3}
 --- !u!1001 &1589858663
 PrefabInstance:

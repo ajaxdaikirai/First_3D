@@ -1,20 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class UIScenePrepare : UIScene
 {
-    enum Buttons
+    enum Objects
     {
-    }
-
-    enum Texts
-    {
+        UnitListPanel,
     }
 
     public override void Init()
     {
+        Bind<GameObject>(typeof(Objects));
+        GameObject unitListPanel = Get<GameObject>((int)Objects.UnitListPanel);
+        
+        foreach (CharacterConf.Unit unit in Enum.GetValues(typeof(CharacterConf.Unit)))
+        {
+            UIItemUnitUpgrade item = Managers.UI.MakeSubItem<UIItemUnitUpgrade>(unitListPanel.transform);
+            item.SetName(unit.ToString());
+        }
     }
 }
