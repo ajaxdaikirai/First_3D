@@ -21,9 +21,6 @@ public class UISceneGame : UIScene
         UnitSummonPanel,
     }
 
-    //이미지가 생기면 차후 수정
-    string[] _unitItems = new string[5];
-
     public override void Init()
     {
         //조이스틱에 핸들러 추가
