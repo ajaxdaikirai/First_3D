@@ -42,4 +42,7 @@ public class Define
     }
 
     public const float DESPAWN_DELAY_TIME = 5.0f;
+
+    // 첫 스테이지ID
+    public const int FIRST_STAGE_ID = 1;
 }

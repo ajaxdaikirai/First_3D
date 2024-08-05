@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIScenePrepare : UIScene
 {
@@ -8,9 +9,20 @@ public class UIScenePrepare : UIScene
         UnitListPanel,
     }
 
+    enum Texts
+    {
+        StageIdTxt,
+    }
+
     public override void Init()
     {
         Bind<GameObject>(typeof(Objects));
+        Bind<Text>(typeof(Texts));
+
+        // 스테이지ID 출력
+        Text stageIdTxt = Get<Text>((int)Texts.StageIdTxt);
+        stageIdTxt.text = $"Stage{Managers.Status.StageId}";
+
         GameObject unitListPanel = Get<GameObject>((int)Objects.UnitListPanel);
         
         foreach (CharacterConf.Unit unit in Enum.GetValues(typeof(CharacterConf.Unit)))

@@ -10,9 +10,11 @@ public class Managers : MonoBehaviour
     #region Contents
     GameManagerEx _game = new GameManagerEx();
     SkillManager _skill = new SkillManager();
+    StatusManager _status = new StatusManager();
 
     public static GameManagerEx Game { get { return Instance._game; } }
     public static SkillManager Skill { get { return Instance._skill; } }
+    public static StatusManager Status { get { return Instance._status; } }
     #endregion
 
     #region Core
@@ -55,6 +57,7 @@ public class Managers : MonoBehaviour
             s_instance = go.GetComponent<Managers>();
 
             s_instance._pool.Init();
+            s_instance._status.Init();
         }
     }
 
