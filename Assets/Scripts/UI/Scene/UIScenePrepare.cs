@@ -29,6 +29,7 @@ public class UIScenePrepare : UIScene
         {
             UIItemUnitUpgrade item = Managers.UI.MakeSubItem<UIItemUnitUpgrade>(unitListPanel.transform);
             item.SetName(unit.ToString());
+            item.SetUnitId((int)unit);
         }
     }
 }

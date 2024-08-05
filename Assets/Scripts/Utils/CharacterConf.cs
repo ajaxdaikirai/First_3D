@@ -22,4 +22,7 @@
 
     // 적 타겟 갱신 간격
     public const float UPDATE_LOCK_ON_INTERVAL = 0.2f;
+
+    // 가장 낮은 레벨
+    public const int MIN_LEVEL = 1;
 }
