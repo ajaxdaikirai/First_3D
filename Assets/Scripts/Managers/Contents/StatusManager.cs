@@ -48,8 +48,16 @@ public class StatusManager
             return _unitLevels[unitId];
         }
 
-        // 레벨업
         int level = _unitLevels[unitId];
+        int maxLevel = Managers.Data.GetUnitMaxLevel(unitId);
+        // 이미 최대 레벨에 도달한 경우 레벨업 불가
+        if (level >= maxLevel)
+        {
+            Debug.Log($"Unit is aleady max level. (unitId: {unitId})");
+            return level;
+        }
+
+        // 레벨업
         _unitLevels[unitId] = ++level;
 
         return level;

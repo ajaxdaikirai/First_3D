@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface ILoader<key, value>
@@ -16,6 +17,11 @@ public class DataManager
     public string GetJsonText(string path)
     {
         TextAsset textAsset = Managers.Resource.Load<TextAsset>(path);
+        if (textAsset == null)
+        {
+            Debug.Log($"Not Exist Json File : {path}");
+            return null;
+        }
         return textAsset.text;
     }
 
@@ -26,14 +32,39 @@ public class DataManager
 
     public data.Stat GetStatByLevel(string path, int level)
     {
-        Dictionary <int, data.Stat> _statDict = LoadJson<data.StatLoader, int, data.Stat>(STAT_DIRECTORY + path).MakeDict();
-        if (_statDict == null || _statDict.Count == 0)
+        Dictionary<int, data.Stat> statDict = LoadJson<data.StatLoader, int, data.Stat>(STAT_DIRECTORY + path).MakeDict();
+        if (statDict.Count == 0)
         {
-            Debug.Log($"Not Exist Json File : {STAT_DIRECTORY + path}");
+            Debug.Log($"Not exist data : {STAT_DIRECTORY + path}");
             return null;
         }
 
-        return _statDict[level];
+        return statDict[level];
+    }
+
+    public Dictionary<int, data.Stat> GetUnitStatDic(int unitId)
+    {
+        string unitName = ((CharacterConf.Unit)unitId).ToString();
+        Dictionary<int, data.Stat> statDict = LoadJson<data.StatLoader, int, data.Stat>(STAT_DIRECTORY + unitName + "Stat").MakeDict();
+        if (statDict.Count == 0)
+        {
+            Debug.Log($"Not exist data : {STAT_DIRECTORY + unitName}");
+            return null;
+        }
+
+        return statDict;
+    }
+
+    public data.Stat GetUnitStatByLevel(int unitId, int level)
+    {
+        Dictionary<int, data.Stat> statDict = GetUnitStatDic(unitId);
+        return statDict[level];
+    }
+
+    public int GetUnitMaxLevel(int unitId)
+    {
+        Dictionary<int, data.Stat> statDict = GetUnitStatDic(unitId);
+        return statDict.Keys.Max();
     }
 
     // 스테이지ID로 스테이지를 취득
