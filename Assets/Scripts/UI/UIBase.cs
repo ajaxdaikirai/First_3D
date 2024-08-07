@@ -80,4 +80,9 @@ public abstract class UIBase : MonoBehaviour
                 break;
         }
     }
+
+    public void RemoveEvent(GameObject go)
+    {
+        go.GetComponent<UIEventHandler>().enabled = false;
+    }
 }

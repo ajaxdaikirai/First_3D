@@ -49,9 +49,8 @@ public class StatusManager
         }
 
         int level = _unitLevels[unitId];
-        int maxLevel = Managers.Data.GetUnitMaxLevel(unitId);
         // 이미 최대 레벨에 도달한 경우 레벨업 불가
-        if (level >= maxLevel)
+        if (IsMaxLevelUnit(unitId))
         {
             Debug.Log($"Unit is aleady max level. (unitId: {unitId})");
             return level;
@@ -61,5 +60,14 @@ public class StatusManager
         _unitLevels[unitId] = ++level;
 
         return level;
+    }
+
+    // 최고 레벨의 유닛인가
+    public bool IsMaxLevelUnit(int unitId)
+    {
+        if (_unitLevels[unitId] >= Managers.Data.GetUnitMaxLevel(unitId))
+            return true;
+
+        return false;
     }
 }

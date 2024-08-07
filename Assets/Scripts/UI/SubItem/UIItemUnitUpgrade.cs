@@ -22,6 +22,7 @@ public class UIItemUnitUpgrade : UIBase
     string _inactiveUnitUpgradeTxt = "Get";
 
     string _inactiveUnitLevelTxt = "None";
+    string _unitMaxLevelTxt = "Max";
 
     // 유닛 이미지가 생길때까지 임시로 이름을 표시
     // ======================차후 수정==================
@@ -35,21 +36,9 @@ public class UIItemUnitUpgrade : UIBase
 
         GetText((int)Texts.UnitName).text = _name;
 
-        // 유닛 활성 여부에 따라 레벨, 업그레이드 버튼 문구를 변경
-        string upgradeTxt = _inactiveUnitUpgradeTxt;
-        string levelTxt = _inactiveUnitLevelTxt;
-        if (Managers.Status.IsAvailableUnit(_unitId))
-        {
-            upgradeTxt = _activeUnitUpgradeTxt;
-
-            int level = Managers.Status.GetUnitLevel(_unitId);
-            if (level != 0)
-            {
-                levelTxt = level.ToString();
-            }
-        }
-        GetText((int)Texts.UnitUpgradeTxt).text = upgradeTxt;
-        GetText((int)Texts.UnitLevel).text = levelTxt;
+        // 유닛 레벨에 따라 버튼 문구를 변경
+        UpdateUpgradeTxt();
+        UpdateLevelTxt();
 
         BindEvent(GetButton((int)Buttons.UnitUpgradeBtn).gameObject, (PointerEventData data) => UpgradeUnit(data));
     }
@@ -66,8 +55,46 @@ public class UIItemUnitUpgrade : UIBase
 
     public void UpgradeUnit(PointerEventData data)
     {
-        int level = Managers.Status.LevelUpUnit(_unitId);
-        GetText((int)Texts.UnitLevel).text = level.ToString();
-        GetText((int)Texts.UnitUpgradeTxt).text = _activeUnitUpgradeTxt;
+        Managers.Status.LevelUpUnit(_unitId);
+        UpdateLevelTxt();
+        UpdateUpgradeTxt();
+    }
+
+    private void UpdateUpgradeTxt()
+    {
+        if (Managers.Status.IsAvailableUnit(_unitId))
+        {
+            GetText((int)Texts.UnitUpgradeTxt).text = _activeUnitUpgradeTxt;
+            if (Managers.Status.IsMaxLevelUnit(_unitId))
+            {
+                Button btn = GetButton((int)Buttons.UnitUpgradeBtn);
+                btn.interactable = false;
+                RemoveEvent(btn.gameObject);
+            }
+        }
+        else
+        {
+            GetText((int)Texts.UnitUpgradeTxt).text = _inactiveUnitUpgradeTxt;
+        }
+    }
+
+    private void UpdateLevelTxt()
+    {
+        // 활성 유닛인 경우 
+        if (Managers.Status.IsAvailableUnit(_unitId))
+        {
+            if (Managers.Status.IsMaxLevelUnit(_unitId))
+            {
+                GetText((int)Texts.UnitLevel).text = _unitMaxLevelTxt;
+            }
+            else
+            {
+                GetText((int)Texts.UnitLevel).text = Managers.Status.GetUnitLevel(_unitId).ToString();
+            }
+        }
+        else
+        {
+            GetText((int)Texts.UnitLevel).text = _inactiveUnitLevelTxt;
+        }
     }
 }
