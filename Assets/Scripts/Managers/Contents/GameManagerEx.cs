@@ -166,10 +166,10 @@ public class GameManagerEx
     }
 
     // 스테이지ID로 몬스터 스포닝풀 가동
-    public void StartSpawningPool(int stageId)
+    public void StartSpawningPool()
     {
         // 스테이지 몬스터 정보 취득
-        List<data.StageSpawnMonster> spawnMonsters = Managers.Data.GetStageSpawnMonsterByStageId(stageId);
+        List<data.StageSpawnMonster> spawnMonsters = Managers.Data.GetStageSpawnMonsterByStageId(Managers.Status.StageId);
 
         foreach (data.StageSpawnMonster spawnMonster in spawnMonsters)
         {

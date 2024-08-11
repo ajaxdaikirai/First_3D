@@ -19,7 +19,7 @@ public class GameScene : BaseScene
         gameObject.name = System.Enum.GetName(typeof(Define.Scenes), _sceneType);
 
         // 몬스터 스폰
-        Managers.Game.StartSpawningPool(1);
+        Managers.Game.StartSpawningPool();
 
         // 플레이어 생성
         GameObject player = Managers.Game.InstantiatePlayer();
