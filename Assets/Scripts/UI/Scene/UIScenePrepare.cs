@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UIScenePrepare : UIScene
@@ -14,10 +15,16 @@ public class UIScenePrepare : UIScene
         StageIdTxt,
     }
 
+    enum Buttons
+    {
+        NextStageBtn,
+    }
+
     public override void Init()
     {
         Bind<GameObject>(typeof(Objects));
         Bind<Text>(typeof(Texts));
+        Bind<Button>(typeof(Buttons));
 
         // 스테이지ID 출력
         Text stageIdTxt = Get<Text>((int)Texts.StageIdTxt);
@@ -31,5 +38,13 @@ public class UIScenePrepare : UIScene
             item.SetName(unit.ToString());
             item.SetUnitId((int)unit);
         }
+
+        BindEvent(GetButton((int)Buttons.NextStageBtn).gameObject, LoadGameScene);
+    }
+
+    //씬 이동
+    public void LoadGameScene(PointerEventData data)
+    {
+        Managers.Scene.LoadScene(Define.Scenes.GameScene);
     }
 }
