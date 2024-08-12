@@ -91,7 +91,7 @@ public abstract class BaseController : MonoBehaviour
     }
 
     // 애니메이션이 있는 오브젝트 디폴트 설정
-    protected void SetCreatureDefault()
+    protected virtual void SetCreatureDefault()
     {
         //상태 초기화
         State = Define.State.Idle;

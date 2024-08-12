@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Util
@@ -56,5 +54,11 @@ public class Util
     public static bool IsValid(GameObject go)
     {
         return go != null && go.activeSelf;
+    }
+
+    // 문자열과 Enum을 지정해서 int형식으로 반환
+    public static int GetNumByEnumName<T>(string name) where T : Enum
+    {
+        return (int)Enum.Parse(typeof(T), name);
     }
 }

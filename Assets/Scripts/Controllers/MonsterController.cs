@@ -13,5 +13,16 @@ public class MonsterController : CharacterController
     {
         return Managers.Game.Units;
     }
+
+    protected override int GetId()
+    {
+        return Util.GetNumByEnumName<CharacterConf.Monster>(gameObject.name);
+    }
+
+    protected override int GetLevel()
+    {
+        data.StageSpawnMonster monster = Managers.Data.GetSpawnMonsterByStageIdAndMonsterId(Managers.Status.StageId, GetId());
+        return monster.level;
+    }
 }
 

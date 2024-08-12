@@ -23,4 +23,22 @@ namespace data
         public int limit_num;
     }
 
+    [Serializable]
+    public class SpawnMonsterLoader : ILoader<int, StageSpawnMonster>
+    {
+        public List<StageSpawnMonster> spawn_monsters = new List<StageSpawnMonster>();
+
+        public Dictionary<int, StageSpawnMonster> MakeDict()
+        {
+            Dictionary<int, StageSpawnMonster> dict = new Dictionary<int, StageSpawnMonster>();
+
+            foreach (StageSpawnMonster mon in spawn_monsters)
+            {
+                dict.Add(mon.monster_id, mon);
+            }
+
+            return dict;
+        }
+    }
+
 }

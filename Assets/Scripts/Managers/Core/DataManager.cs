@@ -87,4 +87,20 @@ public class DataManager
         data.Stage stage = GetStageByStageId(stageId);
         return stage.spawn_monsters;
     }
+
+    // 스테이지ID로 스테이지 몬스터 정보를 취득
+    public data.StageSpawnMonster GetSpawnMonsterByStageIdAndMonsterId(int stageId, int monsterId)
+    {
+        Dictionary<int, data.StageSpawnMonster> monsterDict = LoadJson<data.SpawnMonsterLoader, int, data.StageSpawnMonster>(STAGE_DIRECTORY + stageId).MakeDict();
+
+        if (monsterDict.Count == 0)
+        {
+            Debug.Log($"Not exist data : {STAGE_DIRECTORY + stageId}");
+            return null;
+        }
+
+        return monsterDict[monsterId];
+    }
+
+    
 }

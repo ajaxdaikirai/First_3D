@@ -19,5 +19,15 @@ public class UnitController : CharacterController
     {
         return $"Die{Random.Range(1, 5)}";
     }
+
+    protected override int GetId()
+    {
+        return Util.GetNumByEnumName<CharacterConf.Unit>(gameObject.name);
+    }
+
+    protected override int GetLevel()
+    {
+        return Managers.Status.GetUnitLevel(GetId());
+    }
 }
 
