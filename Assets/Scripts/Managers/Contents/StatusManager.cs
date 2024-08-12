@@ -21,6 +21,12 @@ public class StatusManager
         _point = Define.POINT_PER_STAGE;
     }
 
+    // 포인트 소비
+    public void DecreasePoint()
+    {
+        _point--;
+    }
+
     // 사용 가능한 유닛인가
     public bool IsAvailableUnit(int unitId)
     {
@@ -49,6 +55,8 @@ public class StatusManager
         if (!IsAvailableUnit(unitId))
         {
             _unitLevels[unitId] = CharacterConf.MIN_LEVEL;
+            DecreasePoint();
+
             return _unitLevels[unitId];
         }
 
@@ -62,6 +70,7 @@ public class StatusManager
 
         // 레벨업
         _unitLevels[unitId] = ++level;
+        DecreasePoint();
 
         return level;
     }

@@ -28,6 +28,7 @@ public class UIItemUnitUpgrade : UIBase
     // ======================차후 수정==================
     int _unitId;
     string _name;
+    UIScenePrepare _parentUI;
 
     public override void Init()
     {
@@ -37,8 +38,7 @@ public class UIItemUnitUpgrade : UIBase
         GetText((int)Texts.UnitName).text = _name;
 
         // 유닛 레벨에 따라 버튼 문구를 변경
-        UpdateUpgradeTxt();
-        UpdateLevelTxt();
+        UpdateElements();
 
         BindEvent(GetButton((int)Buttons.UnitUpgradeBtn).gameObject, (PointerEventData data) => UpgradeUnit(data));
     }
@@ -53,15 +53,37 @@ public class UIItemUnitUpgrade : UIBase
         _unitId = unitId;
     }
 
+    public void SetParent(UIScenePrepare ui)
+    {
+        _parentUI = ui;
+    }
+
     public void UpgradeUnit(PointerEventData data)
     {
         Managers.Status.LevelUpUnit(_unitId);
+        UpdateElements();
+
+        // 스킬 포인트에 변화가 생겼을 경우 다른 UI요소들도 갱신함
+        _parentUI.ExecUpgrade();
+    }
+
+    // 각 요소들을 최신 상태로 갱신함
+    public void UpdateElements()
+    {
         UpdateLevelTxt();
         UpdateUpgradeTxt();
     }
 
     private void UpdateUpgradeTxt()
     {
+        // 포인트가 없을 경우
+        if (Managers.Status.Point <= 0)
+        {
+            Button btn = GetButton((int)Buttons.UnitUpgradeBtn);
+            btn.interactable = false;
+            RemoveEvent(btn.gameObject);
+        }
+
         if (Managers.Status.IsAvailableUnit(_unitId))
         {
             GetText((int)Texts.UnitUpgradeTxt).text = _activeUnitUpgradeTxt;
