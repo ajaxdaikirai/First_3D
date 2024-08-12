@@ -7,14 +7,18 @@ public class StatusManager
 {
     // 스테이지ID
     int _stageId;
+    // 스킬 업그레이드 포인트
+    int _point;
     // 유닛ID 별 레벨
     Dictionary<int, int> _unitLevels = new Dictionary<int, int>();
 
     public int StageId { get { return _stageId; } }
+    public int Point { get { return _point; } }
 
     public void Init()
     {
         _stageId = Define.FIRST_STAGE_ID;
+        _point = Define.POINT_PER_STAGE;
     }
 
     // 사용 가능한 유닛인가

@@ -45,4 +45,7 @@ public class Define
 
     // 첫 스테이지ID
     public const int FIRST_STAGE_ID = 1;
+
+    // 업그레이드 포인트 부여 수
+    public const int POINT_PER_STAGE = 1;
 }

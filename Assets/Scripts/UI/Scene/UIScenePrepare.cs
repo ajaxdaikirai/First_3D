@@ -13,6 +13,7 @@ public class UIScenePrepare : UIScene
     enum Texts
     {
         StageIdTxt,
+        UpgradePoint,
     }
 
     enum Buttons
@@ -40,6 +41,9 @@ public class UIScenePrepare : UIScene
         }
 
         BindEvent(GetButton((int)Buttons.NextStageBtn).gameObject, LoadGameScene);
+
+        // 스킬 포인트
+        Get<Text>((int)Texts.UpgradePoint).text = Managers.Status.Point.ToString();
     }
 
     //씬 이동
