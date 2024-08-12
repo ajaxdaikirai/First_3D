@@ -70,4 +70,10 @@ public class StatusManager
 
         return false;
     }
+
+    // 활성된 유닛ID 리스트
+    public List<int> GetAvailableUnitIds()
+    {
+        return new List<int>(_unitLevels.Keys);
+    }
 }

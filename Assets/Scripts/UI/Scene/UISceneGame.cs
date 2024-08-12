@@ -35,7 +35,7 @@ public class UISceneGame : UIScene
         Bind<GameObject>(typeof(Objects));
         GameObject unitSummonPanel = Get<GameObject>((int)Objects.UnitSummonPanel);
 
-        foreach (CharacterConf.Unit unit in Enum.GetValues(typeof(CharacterConf.Unit)))
+        foreach (CharacterConf.Unit unit in Managers.Status.GetAvailableUnitIds())
         {
             UIItemSummonUnit item = Managers.UI.MakeSubItem<UIItemSummonUnit>(unitSummonPanel.transform);
             item.SetName(unit.ToString());
