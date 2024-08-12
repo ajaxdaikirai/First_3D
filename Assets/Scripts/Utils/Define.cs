@@ -48,4 +48,13 @@ public class Define
 
     // 업그레이드 포인트 부여 수
     public const int POINT_PER_STAGE = 1;
+
+    // 게이지 증가 간격
+    public const float INCREASE_GAUGE_INTERVAL = 0.1f;
+
+    // 틱당 게이지 증가치
+    public const float INCREASE_SUMMON_GAUGE_PER_TICK = 1.0f;
+
+    // 소환 게이지 최대치
+    public const float MAX_SUMMON_GAUGE = 100.0f;
 }

@@ -25,6 +25,9 @@ public class GameManagerEx
     //스폰되어 있는 적
     List<GameObject> _monsters = new List<GameObject>();
 
+    // 소환 게이지
+    SummonGauge _summonGauge;
+
     public GameObject Player { get { return _player; } }
     public GameObject MonsterCrystal { get { return _monsterCrystal; } }
     public List<GameObject> Units { get { return _units; } }
@@ -60,6 +63,12 @@ public class GameManagerEx
             return;
         }
         _monsterCrystal = monsterCrystal;
+    }
+
+    public void Clear()
+    {
+        _units.Clear();
+        _monsters.Clear();
     }
 
     public GameObject InstantiatePlayer()
@@ -184,5 +193,22 @@ public class GameManagerEx
             monsterSpawningPool.Name = monsterName;
             monsterSpawningPool.SetKeepEnemyCount(spawnMonster.limit_num);
         }
+    }
+
+    // 소환 게이지 증가 시작
+    public void StartSummonGaugeIncreasing()
+    {
+        GameObject go = new GameObject("SummonGauge");
+        SummonGauge summonGauge = Util.GetOrAddComponent<SummonGauge>(go);
+        summonGauge.StartGaugeIncreasing();
+        _summonGauge = summonGauge;
+    }
+
+    public float GetSummonGauge()
+    {
+        if (_summonGauge == null)
+            return 0;
+
+        return _summonGauge.Gauge;
     }
 }

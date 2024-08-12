@@ -19,6 +19,7 @@ public class UISceneGame : UIScene
     enum Objects
     {
         UnitSummonPanel,
+        SummonGauge,
     }
 
     public override void Init()
@@ -40,7 +41,11 @@ public class UISceneGame : UIScene
             UIItemSummonUnit item = Managers.UI.MakeSubItem<UIItemSummonUnit>(unitSummonPanel.transform);
             item.SetName(unit.ToString());
         }
+    }
 
+    private void Update()
+    {
+        GetGameObject((int)Objects.SummonGauge).GetComponent<Slider>().value = Managers.Game.GetSummonGauge() / Define.MAX_SUMMON_GAUGE;
     }
 
 }

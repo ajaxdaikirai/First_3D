@@ -20,6 +20,8 @@ public class GameScene : BaseScene
 
         // 몬스터 스폰
         Managers.Game.StartSpawningPool();
+        // 소환 게이지 가동
+        Managers.Game.StartSummonGaugeIncreasing();
 
         // 플레이어 생성
         GameObject player = Managers.Game.InstantiatePlayer();
