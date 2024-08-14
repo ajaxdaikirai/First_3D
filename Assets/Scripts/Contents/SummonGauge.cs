@@ -31,4 +31,9 @@ public class SummonGauge : MonoBehaviour
             _gauge = Mathf.Clamp(_gauge += _increasePerTick, 0, _maxGauge);
         }
     }
+
+    public void ConsumeGauge(float value)
+    {
+        _gauge -= value;
+    }
 }

@@ -135,6 +135,16 @@ public class GameManagerEx
         return go;
     }
 
+    // 게이지를 소비하여 유닛 소환
+    public void SummonUnit(int unitId)
+    {
+        if (!IsEnoughSummonCost())
+            return;
+
+        ConsumeSummonGauge(Define.SUMMON_COST);
+        Spawn($"Units/{Util.NumToEnumName<CharacterConf.Unit>(unitId)}");
+    }
+
     // 오브젝트 비활성
     public void Despawn(GameObject go)
     {
@@ -210,5 +220,23 @@ public class GameManagerEx
             return 0;
 
         return _summonGauge.Gauge;
+    }
+
+    // 유닛을 소환할 만큼의 게이지가 있는가
+    public bool IsEnoughSummonCost()
+    {
+        return GetSummonGauge() >= Define.SUMMON_COST;
+    }
+
+    // 소환 게이지 소비
+    public void ConsumeSummonGauge(float value)
+    {
+        if (_summonGauge == null)
+        {
+            Debug.Log("SummonGage is not initialized");
+            return;
+        }
+
+        _summonGauge.ConsumeGauge(value);
     }
 }

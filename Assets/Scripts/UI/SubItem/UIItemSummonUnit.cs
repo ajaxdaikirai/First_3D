@@ -19,6 +19,7 @@ public class UIItemSummonUnit : UIBase
     //유닛 이미지가 생길때까지 임시로 이름을 표시
     //======================차후 수정==================
     string _name;
+    int _unitId;
 
     public override void Init()
     {
@@ -34,8 +35,14 @@ public class UIItemSummonUnit : UIBase
         _name = name;
     }
 
+    public void SetUnitId(int unitId)
+    {
+        _unitId = unitId;
+    }
+
+    // 소환
     public void SummonUnit(PointerEventData data)
     {
-        Managers.Game.Spawn($"Units/{_name}");
+        Managers.Game.SummonUnit(_unitId);
     }
 }

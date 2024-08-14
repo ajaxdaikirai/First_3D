@@ -62,4 +62,9 @@ public class Util
         return (int)Enum.Parse(typeof(T), name);
     }
 
+    // Enum의 수를 string으로 반환
+    public static string NumToEnumName<T>(int num) where T : Enum
+    {
+        return Enum.GetName(typeof(CharacterConf.Unit), num);
+    }
 }

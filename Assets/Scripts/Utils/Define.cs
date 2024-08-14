@@ -57,4 +57,7 @@ public class Define
 
     // 소환 게이지 최대치
     public const float MAX_SUMMON_GAUGE = 100.0f;
+
+    // 캐릭터 소환에 필요한 게이지
+    public const float SUMMON_COST = 10.0f;
 }

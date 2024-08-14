@@ -40,6 +40,7 @@ public class UISceneGame : UIScene
         {
             UIItemSummonUnit item = Managers.UI.MakeSubItem<UIItemSummonUnit>(unitSummonPanel.transform);
             item.SetName(unit.ToString());
+            item.SetUnitId((int)unit);
         }
     }
 
