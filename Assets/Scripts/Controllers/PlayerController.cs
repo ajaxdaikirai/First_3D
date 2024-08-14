@@ -87,4 +87,12 @@ public class PlayerController : BaseController
             if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
     }
 
+    public override void OnDie()
+    {
+        base.OnDie();
+
+        // 게임오버 판넬 활성
+        Managers.UI.ShowPopupUI<UIPopupGameover>();
+    }
+
 }

@@ -108,6 +108,22 @@ public class UIManager
         return Util.GetOrAddComponent<T>(go);
     }
 
+    // ÆË¾÷ UI È°¼º
+    public T ShowPopupUI<T>(string name = null) where T : UIPopup
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            name = typeof(T).Name;
+        }
+
+        GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
+        T popup = Util.GetOrAddComponent<T>(go);
+
+        go.transform.SetParent(Root.transform);
+
+        return popup;
+    }
+
     public void Clear()
     {
     }
