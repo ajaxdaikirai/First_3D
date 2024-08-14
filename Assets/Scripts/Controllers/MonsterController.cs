@@ -16,7 +16,7 @@ public class MonsterController : CharacterController
 
     protected override int GetId()
     {
-        return Util.GetNumByEnumName<CharacterConf.Monster>(gameObject.name);
+        return Util.GetNumToEnumName<CharacterConf.Monster>(gameObject.name);
     }
 
     protected override int GetLevel()
