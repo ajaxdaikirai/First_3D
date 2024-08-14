@@ -22,7 +22,7 @@ public class UnitController : CharacterController
 
     protected override int GetId()
     {
-        return Util.NumToEnumName<CharacterConf.Unit>(gameObject.name);
+        return Util.EnumNameToNum<CharacterConf.Unit>(gameObject.name);
     }
 
     protected override int GetLevel()

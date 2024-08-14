@@ -57,7 +57,7 @@ public class Util
     }
 
     // 문자열과 Enum을 지정해서 int형식으로 반환
-    public static int NumToEnumName<T>(string name) where T : Enum
+    public static int EnumNameToNum<T>(string name) where T : Enum
     {
         return (int)Enum.Parse(typeof(T), name);
     }
