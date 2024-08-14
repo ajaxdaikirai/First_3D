@@ -475,6 +475,7 @@ GameObject:
   - component: {fileID: 422111306600835599}
   - component: {fileID: 422111306600835592}
   - component: {fileID: 422111306600835593}
+  - component: {fileID: -9215846480259632796}
   m_Layer: 5
   m_Name: UISceneGame
   m_TagString: Untagged
@@ -566,6 +567,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &-9215846480259632796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422111306600835594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e16f4e520a4d0e48bfaebfce4bc1b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &422111306600882790
 GameObject:
   m_ObjectHideFlags: 0
