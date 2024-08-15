@@ -39,6 +39,11 @@ public class PlayerController : BaseController
         AddAction();
     }
 
+    protected override string DieAnimName()
+    {
+        return $"Die{Random.Range(1, 5)}";
+    }
+
     //Invoke로 사용할 수 있게 각종 버튼에 액션 추가
     void AddAction()
     {
