@@ -37,10 +37,10 @@ public class UIItemUnitUpgrade : UIBase
 
         GetText((int)Texts.UnitName).text = _name;
 
+        BindEvent(GetButton((int)Buttons.UnitUpgradeBtn).gameObject, (PointerEventData data) => UpgradeUnit(data));
+
         // 유닛 레벨에 따라 버튼 문구를 변경
         UpdateElements();
-
-        BindEvent(GetButton((int)Buttons.UnitUpgradeBtn).gameObject, (PointerEventData data) => UpgradeUnit(data));
     }
 
     public void SetName(string name)

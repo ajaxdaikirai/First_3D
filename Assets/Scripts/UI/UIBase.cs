@@ -83,6 +83,6 @@ public abstract class UIBase : MonoBehaviour
 
     public void RemoveEvent(GameObject go)
     {
-        go.GetComponent<UIEventHandler>().enabled = false;
+        Destroy(go.GetComponent<UIEventHandler>());
     }
 }
