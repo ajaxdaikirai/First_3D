@@ -92,7 +92,7 @@ public class PlayerController : BaseController
         base.OnDie();
 
         // 게임오버 판넬 활성
-        Managers.UI.ShowPopupUI<UIPopupGameover>();
+        Managers.Game.Gameover();
     }
 
 }

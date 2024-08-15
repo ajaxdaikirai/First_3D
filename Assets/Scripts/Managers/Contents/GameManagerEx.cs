@@ -239,4 +239,13 @@ public class GameManagerEx
 
         _summonGauge.ConsumeGauge(value);
     }
+
+    // 패배 처리
+    public void Gameover()
+    {
+        // 게임오버 판넬 활성
+        Managers.UI.ShowPopupUI<UIPopupGameover>();
+        // 상태 초기화
+        Managers.Status.Reset();
+    }
 }

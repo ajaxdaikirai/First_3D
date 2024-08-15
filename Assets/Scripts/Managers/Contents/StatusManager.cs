@@ -21,6 +21,13 @@ public class StatusManager
         _point = Define.POINT_PER_STAGE;
     }
 
+    public void Reset()
+    {
+        _stageId = Define.FIRST_STAGE_ID;
+        _point = Define.POINT_PER_STAGE;
+        _unitLevels.Clear();
+    }
+
     // 포인트 소비
     public void DecreasePoint()
     {
