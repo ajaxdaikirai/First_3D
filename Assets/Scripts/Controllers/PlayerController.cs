@@ -89,7 +89,14 @@ public class PlayerController : BaseController
 
     public override void OnDie()
     {
-        base.OnDie();
+        if (!_aliveFlag)
+            return;
+
+        State = Define.State.Die;
+        _aliveFlag = false;
+
+        // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
+        gameObject.GetComponent<CapsuleCollider>().enabled = false;
 
         // 게임오버 판넬 활성
         Managers.Game.Gameover();
