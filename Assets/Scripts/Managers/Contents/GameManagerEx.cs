@@ -248,4 +248,15 @@ public class GameManagerEx
         // 상태 초기화
         Managers.Status.Reset();
     }
+
+    // 스테이지 클리어 처리
+    public void StageClear()
+    {
+        // 스테이지ID 증가
+        Managers.Status.IncreaseStageId();
+        // 스킬 포인트 추가
+        Managers.Status.IncreasePoint();
+        // 팝업 활성
+        Managers.UI.ShowPopupUI<UIPopupStageClear>();
+    }
 }

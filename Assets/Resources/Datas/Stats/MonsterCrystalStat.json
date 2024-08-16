@@ -2,7 +2,7 @@
 	"stats": [
 		{
 			"level":"1",
-			"hp":"300",
+			"hp":"10",
 			"offence":"0",
 			"defence":"10",
 			"move_speed":"0",
@@ -12,7 +12,7 @@
 		},
 		{
 			"level":"2",
-			"hp":"300",
+			"hp":"20",
 			"offence":"0",
 			"defence":"10",
 			"move_speed":"0",
@@ -22,7 +22,7 @@
 		},
 		{
 			"level":"3",
-			"hp":"300",
+			"hp":"30",
 			"offence":"0",
 			"defence":"10",
 			"move_speed":"0",

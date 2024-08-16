@@ -13,5 +13,8 @@ public class StaticObjectController : MonoBehaviour
     public void Destroy()
     {
         Managers.Resource.Destroy(gameObject);
+
+        // 스테이지 클리어
+        Managers.Game.StageClear();
     }
 }

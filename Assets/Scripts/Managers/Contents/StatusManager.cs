@@ -34,6 +34,18 @@ public class StatusManager
         _point--;
     }
 
+    // 포인트 추가
+    public void IncreasePoint()
+    {
+        _point++;
+    }
+
+    // 스테이지ID 증가
+    public void IncreaseStageId()
+    {
+        _stageId++;
+    }
+
     // 사용 가능한 유닛인가
     public bool IsAvailableUnit(int unitId)
     {
