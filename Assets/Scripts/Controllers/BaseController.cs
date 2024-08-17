@@ -8,32 +8,43 @@ public abstract class BaseController : MonoBehaviour
     [SerializeField]
     private Define.State _state = Define.State.Idle;
 
+    //락온된 오브젝트
+    [SerializeField]
+    protected GameObject _lockTarget;
+
     //방향
     protected Vector3 _dir = Vector3.forward;
+
     //리지드바디
     protected Rigidbody _rig;
+
     //애니메이터
     protected Animator _anim;
+
     //스텟
     protected Stat _stat;
-    // 쿨타임 플래그
+
+    //목적지
+    protected Vector3 _destPos;
+
     protected bool _attackFlag = true;
-    // 생존 플래그
     protected bool _aliveFlag = true;
+    protected bool _unitFlag = true;
+    protected bool _monsterFlag = true;
+    protected bool _continuedFlag = true;
+    protected bool _stopFlag = false;
+
+
 
     public virtual Define.State State
-    {
+    {   
         get { return _state; }
         set
         {
-            // 생존 플래그가 false면 Die이외의 상태로 변경 불가능
-            if (!_aliveFlag && value != Define.State.Die) return;
-
             _state = value;
 
-            // 애니메이터가 없다면 애니메이션 재생 스킵
-            if (_anim == null) return;
-
+            if (_anim == null || _stopFlag) return;
+            
             switch (_state)
             {
                 //애니메이션 재생
@@ -41,7 +52,8 @@ public abstract class BaseController : MonoBehaviour
                     _anim.CrossFade("Idle", 0.1f);
                     break;
                 case Define.State.Die:
-                    _anim.CrossFade(DieAnimName(), 0.5f);
+                    //int ranNom = (int)Random.Range(1.0f, 4.0f);
+                    _anim.CrossFade($"Die", 0.05f);
                     break;
                 case Define.State.Attack:
                     _anim.CrossFade("Attack", 0.1f);
@@ -51,23 +63,24 @@ public abstract class BaseController : MonoBehaviour
                     break;
                 case Define.State.Skill:
                     break;
+                case Define.State.Clear:
+                    _anim.CrossFade("Clear", 0.3f);
+                    _stopFlag = true;
+                    break;
             }
         }
-    }
-
-    // ================================
-    // 애니메이션 관련
-    // ================================
-    // Die 상태의 애니메이션명
-    protected virtual string DieAnimName() { return "Die"; }
+    } 
 
     private void Start()
     {
+
         Init();
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        if (Conf.Main.CLEAR_FLAG)
+            State = Define.State.Clear;
         switch (State)
         {
             case Define.State.Idle:
@@ -85,110 +98,67 @@ public abstract class BaseController : MonoBehaviour
             case Define.State.Skill:
                 UpdateSkill();
                 break;
+            case Define.State.Clear:
+                UpdateClear();
+                break;
 
         }
-        UpdateAlways();
+            UpdateAlways();
     }
 
-    // 애니메이션이 있는 오브젝트 디폴트 설정
-    protected virtual void SetCreatureDefault()
-    {
-        //상태 초기화
-        State = Define.State.Idle;
-
-        //애니메이터
-        _anim = gameObject.GetComponent<Animator>();
-        if (_anim == null)
-        {
-            Debug.Log("Can't Load Animator Component");
-        }
-
-        //리지드바디
-        _rig = gameObject.GetComponent<Rigidbody>();
-        if (_anim == null)
-        {
-            Debug.Log("Can't Load Rigidbody Component");
-        }
-
-        //스텟 추가
-        _stat = transform.GetComponent<Stat>();
-        if (_stat == null)
-        {
-            Debug.Log("Can't Load Stat Component");
-        }
-        _stat.SetStat(Managers.Data.GetStatByLevel($"{gameObject.name}Stat", 1));
-
-        //HP바 추가
-        if (gameObject.GetComponentInParent<UIHpBar>() == null)
-        {
-            Managers.UI.MakeWorldUI<UIHpBar>(transform);
-        }
-    }
+    public abstract void Init();
 
     protected virtual void UpdateAlways() 
     {
         _rig.velocity = Vector3.zero; 
     }
 
-    // 쿨타임 경과후 공격가능 플래그 활성
-    protected IEnumerator AttackCoolTime()
+    protected virtual void UpdateDie() 
     {
-        yield return new WaitForSeconds(_stat.AttackSpeed);
-        _attackFlag = true;
+
+        StartCoroutine(Despwn());
+
     }
 
-    // 공격 후의 처리
-    // 애니메이션에서 호출되는 경우가 있음
-    void EndAttack()
+    protected virtual void UpdateIdle() {}
+    protected virtual void UpdateAttack() { }
+    protected virtual void UpdateSkill() { }
+    protected virtual void UpdateMoving() { }
+    protected virtual void UpdateClear() { }
+
+    //사망시 일정시간 후 비활성화
+    protected virtual IEnumerator Despwn()
     {
-        State = Define.State.Idle;
+        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
+
+/*        if (!_aliveFlag)
+        {
+            Managers.Game.Despawn(Define.Layer.Player, gameObject);
+        }
+        else if (!_monsterFlag)
+        {
+            Managers.Game.Despawn(Define.Layer.Monster, gameObject);
+            _monsterFlag = true;
+        }
+        else if (!_unitFlag)
+        {
+            Managers.Game.Despawn(Define.Layer.Unit, gameObject);
+            _unitFlag = true;
+        }*/
+
     }
 
-    // 재활성 되었을 때의 처리
     protected virtual void OnEnable()
     {
-        _aliveFlag = true;
-        _attackFlag = true;
-
-        // 상태 초기화
+        //상태 초기화
         State = Define.State.Idle;
 
-        // 체력회복
+        //체력회복
         if (_stat != null)
         {
             _stat.Hp = _stat.MaxHp;
         }
 
-        // 콜라이더 활성
-        gameObject.GetComponent<CapsuleCollider>().enabled = true;
+        _aliveFlag = true;
     }
-
-    public virtual void OnDie()
-    {
-        if (!_aliveFlag)
-            return;
-
-        State = Define.State.Die;
-        _aliveFlag = false;
-        
-        // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
-        gameObject.GetComponent<CapsuleCollider>().enabled = false;
-        // 사망 처리
-        Managers.Game.Despawn(gameObject);
-    }
-
-    // ====================================
-    // 추상 메서드
-    // ====================================
-    protected abstract void Init();
-
-    // ====================================
-    // 필수는 아니지만
-    // 오버라이드 해야만 사용가능한 메서드
-    // ====================================
-    protected virtual void UpdateIdle() { }
-    protected virtual void UpdateAttack() { }
-    protected virtual void UpdateSkill() { }
-    protected virtual void UpdateMoving() { }
-    protected virtual void UpdateDie() { }
 }

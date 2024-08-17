@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Util
@@ -20,6 +22,7 @@ public class Util
         if (transform == null) return null;
         return transform.gameObject;
     }
+
 
     //해당 이름의 자식 오브첵트 찾기
     //recursive가 true일 경우, 자식의 자식까지 검색
@@ -54,17 +57,5 @@ public class Util
     public static bool IsValid(GameObject go)
     {
         return go != null && go.activeSelf;
-    }
-
-    // 문자열과 Enum을 지정해서 int형식으로 반환
-    public static int EnumNameToNum<T>(string name) where T : Enum
-    {
-        return (int)Enum.Parse(typeof(T), name);
-    }
-
-    // Enum의 수를 string으로 반환
-    public static string NumToEnumName<T>(int num) where T : Enum
-    {
-        return Enum.GetName(typeof(CharacterConf.Unit), num);
     }
 }

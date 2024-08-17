@@ -1,33 +1,217 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class UnitController : CharacterController
+public class UnitController : BaseController
 {
-    protected override GameObject MainTarget()
+    //적 인식 갱신 시간
+    [SerializeField]
+    float UpdateLockOnInterval = 0.5f;
+
+    //타겟 락 함수 실행 플래그
+    bool _onLockTargetFlag = true;
+
+    public override void Init()
     {
-        return Managers.Game.MonsterCrystal;
+        //상태 초기화
+        State = Define.State.Idle;
+
+        //애니메이터
+        _anim = gameObject.GetComponent<Animator>();
+        if (_anim == null)
+        {
+            Debug.Log("Can't Load Animator Component");
+        }
+
+        //리지드바디
+        _rig = gameObject.GetComponent<Rigidbody>();
+        if (_anim == null)
+        {
+            Debug.Log("Can't Load Rigidbody Component");
+        }
+
+        //스텟 추가
+        _stat = transform.GetComponent<Stat>();
+        if (_stat == null)
+        {
+            Debug.Log("Can't Load Stat Component");
+        }
+        _stat.SetStat(Managers.Data.GetStatByLevel($"{gameObject.name}Stat", 1));
+
+        //HP바 추가
+        if (gameObject.GetComponentInParent<UIHpBar>() == null)
+        {
+            Managers.UI.MakeWorldUI<UIHpBar>(transform);
+        }
+
+        //적 식별 코루틴 실행
+        //StartCoroutine(TargetLockCoroutine());
+
+
     }
 
-    protected override List<GameObject> Targets()
+
+    protected override void UpdateAlways()
     {
-        return Managers.Game.Monsters;
+        base.UpdateAlways();
+
+        if (Managers.Game.Player == null)
+            return;
+
+
+        //플레이어가 죽으면 정지
+        if (Managers.Game.Player.GetComponent<PlayerController>().State == Define.State.Die)
+            UpdateDie();
+
+        //타겟 락온 함수를 실행
+        if (_onLockTargetFlag)
+        {
+            StartCoroutine(TargetLockCoroutine());
+        }
+
+        if (Managers.Game.MonsterCrystal == null)
+            Despwn();
     }
 
-    // 유닛은 4개의 사망 애니메이션이 있음
-    protected override string DieAnimName() 
+    protected override void UpdateIdle()
     {
-        return $"Die{Random.Range(1, 5)}";
+        if (Managers.Game.MonsterCrystal == null || !Managers.Game.MonsterCrystal.activeSelf) return;
+        if(_lockTarget != null)
+        {
+            _onLockTargetFlag = true;
+            State = Define.State.Moving;
+        }
+        if (!_attackFlag) return;
+        
     }
 
-    protected override int GetId()
+    protected override void UpdateMoving()
     {
-        return Util.EnumNameToNum<CharacterConf.Unit>(gameObject.name);
+        //타겟이 없을 경우 움직임 멈춤
+        if (_lockTarget == null || _lockTarget.activeSelf == false)
+        {
+            State = Define.State.Idle;
+            return;
+        }
+        //락온된 타겟과의 거리 계산
+        _destPos = _lockTarget.transform.position - transform.position;
+        float dis = _destPos.magnitude;
+        _dir = _destPos.normalized;
+        if(dis < _stat.AttackDistance)
+        {
+            State = Define.State.Attack;
+            return;
+        }
+
+        transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
+        if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
     }
 
-    protected override int GetLevel()
+    protected override void UpdateAttack()
     {
-        return Managers.Status.GetUnitLevel(GetId());
+        //타겟이 없을 경우 움직임 멈춤
+        if (_lockTarget == null || !_lockTarget.activeSelf)
+        {
+            if (_lockTarget == Managers.Game.Player)
+                State = Define.State.Idle;
+            return;
+        }
+
+        if ((_lockTarget.transform.position - transform.position).magnitude > _stat.AttackDistance)
+        {
+            State = Define.State.Moving;
+            return;
+        }
+
+    }
+
+    protected override void UpdateDie()
+    {
+        _onLockTargetFlag = false;
+        _unitFlag = false;
+        StartCoroutine(Despwn());
+    }
+
+    void OnAttack()
+    {
+        _attackFlag = false;
+        //타겟이 비활성화되었을 경우 스킵
+        if (!(_lockTarget == null || !_lockTarget.activeSelf))
+        {
+            _lockTarget.GetComponent<Stat>().OnAttacked(_stat.Offence);
+        }
+        
+        //공격 쿨타임
+        StartCoroutine(AttackCoolTime());
+    }
+
+    void EndAttack()
+    {
+        State = Define.State.Idle;
+        
+    }
+
+    protected IEnumerator AttackCoolTime()
+    {
+        yield return new WaitForSeconds(_stat.AttackSpeed);
+        _attackFlag = true;
+    }
+
+    //지정된 시간만큼 타겟 갱신
+    protected IEnumerator TargetLockCoroutine()
+    {
+        yield return new WaitForSeconds(UpdateLockOnInterval);
+        OnLockTarget();
+    }
+
+    //타겟 갱신 함수
+    protected void OnLockTarget()
+    {
+        float minDis;
+        float distance;
+
+        //크리스탈이 없을시 실행안함
+        if (Managers.Game.MonsterCrystal == null) return;
+        _lockTarget = Managers.Game.MonsterCrystal;
+        minDis = (Managers.Game.MonsterCrystal.transform.position - transform.position).sqrMagnitude;
+
+        //플레이어 포함 모든 캐릭터와 거리를 비교하고 가장 가까운 캐릭터를 타겟으로 지정
+        List<GameObject> targetList = Managers.Game.Monsters;
+        if (targetList.Count == 0)
+        {
+            //기본 타겟으로 크리스탈을 지정
+            _lockTarget = Managers.Game.MonsterCrystal;
+            return;
+        }
+        else
+        {
+            foreach (GameObject go in targetList)
+            {
+                distance = (go.transform.position - transform.position).sqrMagnitude;
+                if (minDis > distance )
+                {
+                    _lockTarget = go;
+                    minDis = distance;
+                    _onLockTargetFlag = false;
+                    break;
+                }
+            }
+        }
+        
+    }
+
+    protected override void UpdateClear()
+    {
+        State = Define.State.Clear;
+        base.UpdateClear();
+    }
+
+    protected override IEnumerator Despwn()
+    {
+        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
+        Managers.Game.Despawn(Define.Layer.Unit, gameObject);
     }
 }
 

@@ -1,9 +1,0 @@
-{
-	"spawn_monsters": [
-		{
-			"monster_id": "1",
-			"level": "1",
-			"limit_num": "7"
-		}
-	]
-}

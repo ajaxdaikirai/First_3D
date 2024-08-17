@@ -2,19 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class StaticObjectController : MonoBehaviour
 {
+    protected bool flag = false;
+
     void Start()
     {
         Init();
     }
 
-    protected virtual void Init() {}
-    public void Destroy()
-    {
-        Managers.Resource.Destroy(gameObject);
-
-        // 스테이지 클리어
-        Managers.Game.StageClear();
-    }
+    public virtual void Init() {}
+    public virtual void Destroy(){}
 }

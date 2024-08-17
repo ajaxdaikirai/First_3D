@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
+
 
 public class PlayerController : BaseController
 {
@@ -17,9 +17,38 @@ public class PlayerController : BaseController
     //스킬 이름
     string SKILL_NAME = "PlayerAttack";
 
-    protected override void Init()
+    //게임오버 판넬초기화
+    Panel_GameOver panel_GameOver;
+
+    public override void Init()
     {
-        SetCreatureDefault();
+        //상태 초기화
+        State = Define.State.Idle;
+
+        //클리어 플래그초기화
+        Conf.Main.CLEAR_FLAG = false;
+
+        //스텟 초기화
+        _stat = gameObject.GetComponent<Stat>();
+        if (_stat == null)
+        {
+            Debug.Log("Can't Load Stat Component");
+        }
+        _stat.SetStat(Managers.Data.GetStatByLevel("PlayerStat", 1));
+
+        //애니메이터
+        _anim = gameObject.GetComponent<Animator>();
+        if (_anim == null)
+        {
+            Debug.Log("Can't Load Animator Component");
+        }
+
+        //리지드바디
+        _rig = gameObject.GetComponent<Rigidbody>();
+        if (_rig == null)
+        {
+            Debug.Log("Can't Load Rigidbody Component");
+        }
 
         //컨트롤러UI 초기화
         _uiScene = Managers.UI.UIScene;
@@ -29,6 +58,20 @@ public class PlayerController : BaseController
             Debug.Log("Not Exist Player Controller UI");
         }
 
+        //HP바 추가
+        if (gameObject.GetComponentInChildren<UIHpBar>() == null)
+        {
+            Managers.UI.MakeWorldUI<UIHpBar>(transform);
+        }
+
+        panel_GameOver = Managers.Game.Panel;
+        //게임오버 판넬추가
+        if (panel_GameOver == null)
+        {
+            Debug.Log("Not Exist GameOver Panel");
+        }
+
+
         //스킬 발사 지점
         _launchPoint = Util.FindChild<Transform>(gameObject, "LaunchPoint", true);
 
@@ -37,11 +80,6 @@ public class PlayerController : BaseController
 
         //버튼 액션 추가
         AddAction();
-    }
-
-    protected override string DieAnimName()
-    {
-        return $"Die{Random.Range(1, 5)}";
     }
 
     //Invoke로 사용할 수 있게 각종 버튼에 액션 추가
@@ -63,6 +101,7 @@ public class PlayerController : BaseController
             State = Define.State.Moving;
         }
         _dir = diretion;
+
     }
 
     void OnJoyStickUpEvent()
@@ -79,6 +118,14 @@ public class PlayerController : BaseController
             _attackFlag = false;
             StartCoroutine(AttackCoolTime());
         }
+
+    }
+
+    //공격 쿨타임 동안 공격 플레그를 false
+    protected IEnumerator AttackCoolTime()
+    {
+        yield return new WaitForSeconds(_stat.AttackSpeed);
+        _attackFlag = true;
     }
 
     void OnAttack()
@@ -86,25 +133,40 @@ public class PlayerController : BaseController
         Managers.Skill.SpawnSkill(SKILL_NAME, _launchPoint.position, _dir, _stat.AttackDistance, _stat.ProjectileSpeed, _stat.Offence, _layers);
     }
 
+    void EndAttack()
+    {
+        State = Define.State.Idle;
+    }
+
     protected override void UpdateMoving()
     {
-            transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
-            if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
+        transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
+        _dir.y = 0;
+        if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
+
     }
 
-    public override void OnDie()
+    protected override void UpdateDie()
     {
-        if (!_aliveFlag)
-            return;
-
-        State = Define.State.Die;
         _aliveFlag = false;
-
-        // 사망 후에는 뒤의 캐릭터에 방해가 되지 않도록 콜라이더를 해제
-        gameObject.GetComponent<CapsuleCollider>().enabled = false;
-
-        // 게임오버 판넬 활성
-        Managers.Game.Gameover();
+        StartCoroutine(Despwn());
+        panel_GameOver.Show();
     }
 
+    protected override void UpdateClear()
+    {
+        State = Define.State.Clear;
+        base.UpdateClear();
+    }
+
+    protected override IEnumerator Despwn()
+    {
+        yield return new WaitForSeconds(Define.DESPAWN_DELAY_TIME);
+        Managers.Game.Despawn(Define.Layer.Player, gameObject);
+    }
+
+    public void Stop()
+    {
+        StopAllCoroutines();
+    }
 }

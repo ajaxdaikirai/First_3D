@@ -2006,7 +2006,8 @@ namespace AdvancedPeopleSystem
 
             var meshOriginal = Settings.OriginalMesh.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
             var allBones = meshOriginal.bones;
-            var rootBone = meshOriginal.rootBone;
+            var 
+                Bone = meshOriginal.rootBone;
 
             var bonesThis = GetCharacterPart("Head").skinnedMesh[0].bones;
 
@@ -2055,7 +2056,7 @@ namespace AdvancedPeopleSystem
             if (Application.isPlaying || (instanceStatus == CharacterInstanceStatus.NotAPrefabByUser && !igroneUserNonPrefab))
                 return;
 #if UNITY_EDITOR
-            bool stageOpened = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null;
+            bool stageOpened = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null;
             bool editingInProjectView = (gameObject.scene.name == null);
 
             if (!stageOpened && !editingInProjectView)

@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager
+public class UIManager  
 {
     //Äµ¹ö½º ¼ø¼­
     int _order = 10;
@@ -20,6 +21,7 @@ public class UIManager
             if(root == null)
             {
                 root = new GameObject { name = "@UIRoot" };
+               
             }
             return root;
         }
@@ -32,7 +34,6 @@ public class UIManager
         Canvas canvas = Util.GetOrAddComponent<Canvas>(go);
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.overrideSorting = true;
-
         if (sort)
         {
             canvas.sortingOrder = _order;
@@ -68,7 +69,7 @@ public class UIManager
      }
 
     //Scene UI¸¦ ½ÇÇà
-    public T ShowSceneUI<T>(string name = null) where T : UIScene
+    public T ShowSceneUI<T>(Transform parentTransform = null, string name = null) where T : UIScene
     {
         if (string.IsNullOrEmpty(name))
         {
@@ -78,13 +79,13 @@ public class UIManager
         GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");
         if(go == null)
         {
+            if ($"{name}" == "UISceneMain") 
+                return null;
             Debug.Log("Can't Load UI Prefab");
             return null;
         }
         T uiScene = Util.GetOrAddComponent<T>(go);
         _uiScene = uiScene;
-
-        go.transform.SetParent(Root.transform);
 
         return uiScene;
 
@@ -108,24 +109,42 @@ public class UIManager
         return Util.GetOrAddComponent<T>(go);
     }
 
-    // ÆË¾÷ UI È°¼º
-    public T ShowPopupUI<T>(string name = null) where T : UIPopup
+    //ÆË¾÷UI»ý¼º
+    public T MakePopUp <T>(Transform parentTransform = null, string name = null) where T : UIBase
     {
         if (string.IsNullOrEmpty(name))
         {
             name = typeof(T).Name;
         }
-
         GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
-        T popup = Util.GetOrAddComponent<T>(go);
+        if (parentTransform != null)
+        {
+            go.transform.SetParent(parentTransform);
+        }
 
-        go.transform.SetParent(Root.transform);
+        return Util.GetOrAddComponent<T>(go);
+    }
 
-        return popup;
+    public T MainSceneUI<T>(Transform parentTransform = null, string name = null) where T : UIBase
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            name = typeof(T).Name;
+        }
+        GameObject go = Managers.Resource.Instantiate($"UI/MainSceneUI/{name}");
+        if (parentTransform != null)
+        {
+            go.transform.SetParent(parentTransform);
+        }
+
+        return Util.GetOrAddComponent<T>(go);
     }
 
     public void Clear()
     {
     }
+
+
+    private static UIManager instance;
 
 }

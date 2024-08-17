@@ -8,8 +8,11 @@ public class Define
     {
         Unknown,
         MainScene,
-        PrepareScene,
-        GameScene,
+        GameSceneStage1,
+        GameSceneStage2,
+        GameSceneStage3,
+        GameSceneStage4,
+
     }
 
     public enum State
@@ -19,6 +22,16 @@ public class Define
         Idle,
         Attack,
         Skill,
+        Clear,
+    }
+
+    public enum UIEvent
+    {
+        Click,
+        Drag,
+        Press,
+        PointerDown,
+        PointerUp,
     }
 
     public enum SceneLocateObject
@@ -33,6 +46,7 @@ public class Define
         Unit = 7,
         Monster = 8,
         EnemyStaticObject = 9,
+        Player = 10,
     }
 
     public enum Skill
@@ -41,23 +55,7 @@ public class Define
         Buff,
     }
 
-    public const float DESPAWN_DELAY_TIME = 5.0f;
-
-    // 첫 스테이지ID
-    public const int FIRST_STAGE_ID = 1;
-
-    // 업그레이드 포인트 부여 수
-    public const int POINT_PER_STAGE = 1;
-
-    // 게이지 증가 간격
-    public const float INCREASE_GAUGE_INTERVAL = 0.1f;
-
-    // 틱당 게이지 증가치
-    public const float INCREASE_SUMMON_GAUGE_PER_TICK = 1.0f;
-
-    // 소환 게이지 최대치
-    public const float MAX_SUMMON_GAUGE = 100.0f;
-
-    // 캐릭터 소환에 필요한 게이지
-    public const float SUMMON_COST = 10.0f;
+    public const float DESPAWN_DELAY_TIME = 1.0f;
+    public const float RETRY_DELAY_TIME = 2.0f;
+    public const float NEXT_DELAY_TIME = 1.0f;
 }

@@ -56,17 +56,13 @@ public class Stat : MonoBehaviour
             Hp = 0;
             OnDead();
         }
+
+
         return true;
     }
 
     protected virtual void OnDead()
     {
-        gameObject.GetComponent<BaseController>().OnDie();
-    }
-
-    // »ç¸ÁÇß´Â°¡
-    public bool IsDefeated()
-    {
-        return _hp <= 0;
+        gameObject.GetComponent<BaseController>().State = Define.State.Die;
     }
 }

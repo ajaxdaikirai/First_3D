@@ -8,12 +8,12 @@ public class UISceneMain : UIScene
 {
     enum Buttons
     {
-        GameStartBtn,
+        LoadGameSceneBtn,
     }
 
     enum Texts
     {
-        GameStartTxt,
+        LoadGameSceneTxt,
     }
 
     public override void Init()
@@ -21,12 +21,12 @@ public class UISceneMain : UIScene
         Bind<Button>(typeof(Buttons));
         Bind<Text>(typeof(Texts));
 
-        BindEvent(GetButton((int)Buttons.GameStartBtn).gameObject, LoadPrePareScene);
+        BindEvent((GetButton((int)Buttons.LoadGameSceneBtn).gameObject), LoadGameScene);
     }
 
     //æ¿ ¿Ãµø
-    public void LoadPrePareScene(PointerEventData data)
+    public void LoadGameScene(PointerEventData data)
     {
-        Managers.Scene.LoadScene(Define.Scenes.PrepareScene);
+        Managers.Scene.LoadScene(Define.Scenes.GameSceneStage1);
     }
 }

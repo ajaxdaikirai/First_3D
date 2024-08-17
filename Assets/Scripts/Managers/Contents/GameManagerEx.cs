@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManagerEx
+public class GameManagerEx : ManagerBase
 {
     //GameManager이름을 사용할 수 없는 관계로 Ex를 붙임
 
@@ -18,28 +18,40 @@ public class GameManagerEx
     Vector3 _monsterSpawnPos;
 
     //스폰위치 랜덤 범위
-    float _positionVar = 1.0f;
+    //float _positionVar = 3.0f;
 
     //스폰되어 있는 캐릭터
     List<GameObject> _units = new List<GameObject>();
     //스폰되어 있는 적
     List<GameObject> _monsters = new List<GameObject>();
 
-    // 소환 게이지
-    SummonGauge _summonGauge;
+    //스테이지별 최대 소환가능수
+    public int _summonedUnitCount;
+
 
     public GameObject Player { get { return _player; } }
     public GameObject MonsterCrystal { get { return _monsterCrystal; } }
     public List<GameObject> Units { get { return _units; } }
     public List<GameObject> Monsters { get { return _monsters; } }
-    public int MonsterNum { get { return _monsters.Count; } }
+
+    public GameScene_Panel StartPanel { get { return Managers.UI.MakePopUp<GameScene_Panel>(); } }
+    public Panel_GameOver Panel { get { return Managers.UI.MakePopUp<Panel_GameOver>(); } }
+    public Panel_NextStage NextPanel { get { return Managers.UI.MakePopUp<Panel_NextStage>(); } }
+    public All_Clear_Panel ClearPanel { get { return Managers.UI.MakePopUp<All_Clear_Panel>(); } }
+    public Main_Panel Main_Panel{ get { return Managers.UI.MainSceneUI<Main_Panel>(); } }
+
+
 
     //스폰 되는 지점
     public Vector3 UnitSpawnPos { get { return _unitSpawnPos; } }
     public Vector3 MonsterSpawnPos { get { return _monsterSpawnPos; } }
 
-    public void Init()
+    //스폰 이벤트
+    public Action<int> AddSqawnAction;
+
+    public override void Init()
     {
+
         GameObject unitSpawnPos = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.UnitSpawnSpot));
         if (unitSpawnPos == null)
         {
@@ -65,19 +77,28 @@ public class GameManagerEx
         _monsterCrystal = monsterCrystal;
     }
 
-    public void Clear()
+    public GameObject InstantiateCrystal()
     {
-        _units.Clear();
-        _monsters.Clear();
+        GameObject monsterCrystal = GameObject.Find(Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterCrystal));
+        if (monsterCrystal == null)
+        {
+            Debug.Log("Failed Load MonsterCrystal");
+            //eturn;
+        }
+        _monsterCrystal = monsterCrystal;
+
+        return monsterCrystal;
     }
 
     public GameObject InstantiatePlayer()
     {
+
+
         GameObject player = Managers.Resource.Instantiate("Characters/Player");
         if(player == null)
         {
             Debug.Log("Failed Load Player");
-            return null;
+            //return null;
         }
         _player = player;
         
@@ -87,17 +108,25 @@ public class GameManagerEx
     }
 
     //캐릭터가 생성되는 위치를 반환
-    public Vector3 CreatePos(int layer)
+    public Vector3 CreatePos(Define.Layer layer)
     {
         Vector3 basePos;
-        
+
+        float spawnRange = 0;
+
         switch (layer)
         {
-            case (int)Define.Layer.Unit:
+            case Define.Layer.Unit:
                 basePos = _unitSpawnPos;
+
+                spawnRange = Conf.Main.UNIT_SPAWN_RANGE;
+
                 break;
-            case (int)Define.Layer.Monster:
+            case Define.Layer.Monster:
                 basePos = _monsterSpawnPos;
+
+                spawnRange = Conf.Main.MONSTER_SPAWN_RANGE;
+
                 break;
             default:
                 Debug.Log($"Undifned Case : Layer {Enum.GetName(typeof(Define.SceneLocateObject), Define.SceneLocateObject.MonsterCrystal)}");
@@ -106,28 +135,37 @@ public class GameManagerEx
 
         //랜덤 위치 생성
         Vector3 newPos = new Vector3(
-            UnityEngine.Random.Range(basePos.x - _positionVar, basePos.x + _positionVar),
+            UnityEngine.Random.Range(basePos.x - spawnRange, basePos.x + spawnRange),
             basePos.y,
-            UnityEngine.Random.Range(basePos.z - _positionVar, basePos.z + _positionVar)
+            UnityEngine.Random.Range(basePos.z - spawnRange, basePos.z + spawnRange)
         );
 
         return newPos;
     }
 
-    public GameObject Spawn(string path, Transform parent = null)
+    public GameObject Spawn(Define.Layer layer, string path, Transform parent = null)
     {
         GameObject go = Managers.Resource.Instantiate($"Characters/{path}", parent);
-        int layer = go.layer;
-
+        UnitSpawningPool uSp = GameObject.Find("EnemySpawningPool").GetComponent<UnitSpawningPool>();
+        MonsterSpawningPool mSp = GameObject.Find("MonsterSpawningPool").GetComponent<MonsterSpawningPool>();
         switch (layer)
         {
-            case (int)Define.Layer.Unit:
+            case Define.Layer.Unit:
                 _units.Add(go);
+                uSp.AddUnitCount(1);
+                _summonedUnitCount++;
+                if (AddSqawnAction != null)
+                    AddSqawnAction.Invoke(1);
                 break;
-            case (int)Define.Layer.Monster:
+            case Define.Layer.Monster:
+                
                 _monsters.Add(go);
+                mSp.AddMonsterCount(1);
+                if (AddSqawnAction != null)
+                    AddSqawnAction.Invoke(1);
                 break;
         }
+        
         
         //위치 설정
         go.transform.position = CreatePos(layer);
@@ -135,34 +173,20 @@ public class GameManagerEx
         return go;
     }
 
-    // 게이지를 소비하여 유닛 소환
-    public void SummonUnit(int unitId)
+    public void Despawn(Define.Layer layer, GameObject go)
     {
-        if (!IsEnoughSummonCost())
-            return;
-
-        ConsumeSummonGauge(Define.SUMMON_COST);
-        Spawn($"Units/{Util.NumToEnumName<CharacterConf.Unit>(unitId)}");
-    }
-
-    // 오브젝트 비활성
-    public void Despawn(GameObject go)
-    {
-        RemoveFromSpawnList(go);
-        Managers.Resource.Destroy(go);
-    }
-
-    // 스폰된 오브젝트 리스트에서 대상 삭제
-    public void RemoveFromSpawnList(GameObject go)
-    {
-        int layer = go.layer;
-
+        SpawningPool sp = go.GetComponent<SpawningPool>();
+        UnitSpawningPool uSp = GameObject.Find("EnemySpawningPool").GetComponent<UnitSpawningPool>();
+        MonsterSpawningPool mSp = GameObject.Find("MonsterSpawningPool").GetComponent<MonsterSpawningPool>();
         switch (layer)
         {
-            case (int)Define.Layer.Unit:
+            case Define.Layer.Unit:
                 if (_units.Contains(go))
                 {
                     _units.Remove(go);
+                    uSp.MinusUnitCount(1);
+                    if (AddSqawnAction != null)
+                        AddSqawnAction.Invoke(-1);
                 }
                 else
                 {
@@ -170,10 +194,14 @@ public class GameManagerEx
                     return;
                 }
                 break;
-            case (int)Define.Layer.Monster:
+            case Define.Layer.Monster:
                 if (_monsters.Contains(go))
                 {
                     _monsters.Remove(go);
+
+                    mSp.MinusMonsterCount(1);
+                    if (AddSqawnAction != null)
+                        AddSqawnAction.Invoke(-1);
                 }
                 else
                 {
@@ -182,81 +210,12 @@ public class GameManagerEx
                 }
                 break;
         }
+
+        Managers.Resource.Destroy(go);
     }
 
-    // 스테이지ID로 몬스터 스포닝풀 가동
-    public void StartSpawningPool()
-    {
-        // 스테이지 몬스터 정보 취득
-        List<data.StageSpawnMonster> spawnMonsters = Managers.Data.GetStageSpawnMonsterByStageId(Managers.Status.StageId);
-
-        foreach (data.StageSpawnMonster spawnMonster in spawnMonsters)
-        {
-            // 몬스터 이름 취득
-            CharacterConf.Monster monster = (CharacterConf.Monster)spawnMonster.monster_id;
-            string monsterName = monster.ToString();
-
-            // 몬스터 이름의 스포닝풀 오브젝트 생성
-            GameObject SpawningPool = new GameObject($"{monsterName}SpawningPool");
-            // 스포닝풀 셋팅
-            MonsterSpawningPool monsterSpawningPool = Util.GetOrAddComponent<MonsterSpawningPool>(SpawningPool);
-            monsterSpawningPool.Name = monsterName;
-            monsterSpawningPool.SetKeepEnemyCount(spawnMonster.limit_num);
-        }
-    }
-
-    // 소환 게이지 증가 시작
-    public void StartSummonGaugeIncreasing()
-    {
-        GameObject go = new GameObject("SummonGauge");
-        SummonGauge summonGauge = Util.GetOrAddComponent<SummonGauge>(go);
-        summonGauge.StartGaugeIncreasing();
-        _summonGauge = summonGauge;
-    }
-
-    public float GetSummonGauge()
-    {
-        if (_summonGauge == null)
-            return 0;
-
-        return _summonGauge.Gauge;
-    }
-
-    // 유닛을 소환할 만큼의 게이지가 있는가
-    public bool IsEnoughSummonCost()
-    {
-        return GetSummonGauge() >= Define.SUMMON_COST;
-    }
-
-    // 소환 게이지 소비
-    public void ConsumeSummonGauge(float value)
-    {
-        if (_summonGauge == null)
-        {
-            Debug.Log("SummonGage is not initialized");
-            return;
-        }
-
-        _summonGauge.ConsumeGauge(value);
-    }
-
-    // 패배 처리
-    public void Gameover()
-    {
-        // 게임오버 판넬 활성
-        Managers.UI.ShowPopupUI<UIPopupGameover>();
-        // 상태 초기화
-        Managers.Status.Reset();
-    }
-
-    // 스테이지 클리어 처리
-    public void StageClear()
-    {
-        // 스테이지ID 증가
-        Managers.Status.IncreaseStageId();
-        // 스킬 포인트 추가
-        Managers.Status.IncreasePoint();
-        // 팝업 활성
-        Managers.UI.ShowPopupUI<UIPopupStageClear>();
+    public void Clear() {
+        _units.Clear();
+        _monsters.Clear();
     }
 }
