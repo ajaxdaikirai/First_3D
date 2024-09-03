@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MonsterController : BaseController
 {
@@ -91,7 +92,8 @@ public class MonsterController : BaseController
             State = Define.State.Attack;
             return;
         }
-        transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
+        gameObject.GetComponent<NavMeshAgent>().SetDestination(_lockTarget.transform.position);
+        //transform.position += _dir * Time.deltaTime * _stat.MoveSpeed;
         if (_dir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 10 * Time.deltaTime);
     }
 
